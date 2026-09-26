@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AlertTriangle, BedDouble, Building2, ClipboardList, FileCheck2, IndianRupee, LogOut, MessageSquareWarning, Users } from "lucide-react";
