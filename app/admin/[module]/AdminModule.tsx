@@ -62,6 +62,13 @@ export default function AdminModule({ module }: { module: string }) {
     setMessage("");
   }
 
+  function selectorFor(row: Row | null) {
+    if (!row) return undefined;
+    if (config.table === "settings" || config.table === "feature_flags") return { key: String(row.key) };
+    if (config.table === "user_roles") return { user_id: String(row.user_id), role: String(row.role) };
+    return undefined;
+  }
+
   async function save() {
     setBusy(true); setMessage("");
     try {
@@ -69,7 +76,7 @@ export default function AdminModule({ module }: { module: string }) {
       const response = await fetch("/api/admin/data", {
         method: selected?.id ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ table: config.table, id: selected?.id, data }),
+        body: JSON.stringify({ table: config.table, id: selected?.id, selector: selected?.id ? undefined : selectorFor(selected), data }),
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || "Save failed.");
@@ -88,7 +95,7 @@ export default function AdminModule({ module }: { module: string }) {
       const response = await fetch("/api/admin/data", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ table: config.table, id: row.id }),
+        body: JSON.stringify({ table: config.table, id: row.id, selector: row.id ? undefined : selectorFor(row) }),
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || "Delete failed.");
