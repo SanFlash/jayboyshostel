@@ -66,3 +66,5 @@
   .admin-page-head h1{font-size:37px}.admin-page-head p{font-size:11px}
   .admin-head-actions .button{font-size:11px;padding:11px 10px}
 }
+
+.admin-setup-action{display:flex;align-items:center;gap:8px}.admin-setup-action small{color:#6d7d95;font-size:9px}.spin{animation:admin-spin .8s linear infinite}@keyframes admin-spin{to{transform:rotate(360deg)}}
