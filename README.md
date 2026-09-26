@@ -8,6 +8,58 @@ The project is built with **Next.js, React, TypeScript, Tailwind CSS and Supabas
 
 ---
 
+## 0. Latest Build Fix & Deployment Notes
+
+The latest Render compilation failure was caused by a malformed TypeScript import in `app/page.tsx`. The source contained a literal `\\n` sequence between two imports. The corrected source now uses two real import lines:
+
+```ts
+import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
+```
+
+This was a source syntax error and is now fixed in the repository.
+
+### Render build command
+
+Use:
+
+```bash
+npm install && npm run build
+```
+
+Do not use `npm ci` unless a genuine, matching `package-lock.json` has been generated and committed.
+
+### Next.js SWC lockfile warning
+
+If Render prints `Found lockfile missing swc dependencies`, that warning is related to the incomplete/missing npm lockfile. It is separate from the syntax error that caused the failed build. Do not hand-write a lockfile. When reproducible installs are required, generate a real `package-lock.json` with the supported Node/npm environment, test it, and commit it.
+
+### npm vulnerability warning
+
+`9 vulnerabilities (3 moderate, 6 high)` is an npm audit report. It is not the same as a compilation failure. Do not run `npm audit fix --force` blindly because it can introduce breaking dependency upgrades. First run:
+
+```bash
+npm audit
+```
+
+Review the affected packages, upgrade intentionally, then run `npm run typecheck`, `npm test`, and `npm run build` before deployment.
+
+### Render dashboard override
+
+If Render logs still show:
+
+```text
+Running build command 'npm ci && npm run build'...
+```
+
+open **Render → Service → Settings → Build & Deploy** and change the Build Command to:
+
+```bash
+npm install && npm run build
+```
+
+The repository's `render.yaml` already declares this command, but an existing Render service can retain its dashboard-level build configuration.
+
+---
 ## 1. Technology Stack
 
 ### Frontend
