@@ -143,7 +143,7 @@ export default function AdminModule({ module }: { module: string }) {
         <div className="panel admin-editor">
           <div className="panel-head"><div><span>{selected?.id ? "EDIT RECORD" : "CREATE RECORD"}</span><h2>Data editor</h2></div><Save/></div>
           <p className="editor-help">Advanced admin editor. Use valid database column names and JSON values. The API enforces authentication and role permissions.</p>
-          <textarea value={json} onChange={(e) => setJson(e.target.value)} spellCheck={false} aria-label="Record JSON"/>
+          <div style={{display:"grid",gap:12}}>{Object.entries(JSON.parse(json) as Row).map(([key,value]) => <label key={key} style={{display:"grid",gap:5}}>{key.replaceAll("_"," ")}<input type={typeof value === "number" ? "number" : key.includes("date") ? "date" : "text"} value={String(value ?? "")} onChange={e => setJson(previous => JSON.stringify({...JSON.parse(previous),[key]:typeof value === "number" ? Number(e.target.value) : e.target.value},null,2))}/></label>)}</div>
           <button className="button primary full" onClick={() => void save()} disabled={busy}><Save size={16}/> {busy ? "Saving…" : selected?.id ? "Update record" : "Create record"}</button>
         </div>
       </section>
