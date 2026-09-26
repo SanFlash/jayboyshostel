@@ -105,13 +105,17 @@ npm start
 
 ## Supabase setup
 
-Run the migration in:
+Run these migrations in Supabase SQL Editor, in order:
 
-`supabase/migrations/001_initial_schema.sql`
+1. `supabase/migrations/001_initial_schema.sql`
+2. `supabase/migrations/002_site_content.sql`
+3. `supabase/migrations/003_operations.sql`
 
-The schema covers profiles, roles, hostels, buildings, floors, rooms, beds, members, guardians, applications, documents, tenancies, pricing plans, invoices, payments, announcements, notifications, complaints, audit logs, settings and feature flags.
+Migration 003 adds the operational modules used by the admin console: visitors, maintenance, inventory, expenses, attendance, staff tasks and resident leave requests.
 
-Review the RLS and storage policies before using real resident documents or financial information.
+After migrations are applied, sign in as the super administrator and use **Initialize workspace** on the admin dashboard. It safely creates the initial Jay Boys Hostel structure (hostel, building, floor, sample rooms/beds, pricing and document types) without deleting existing records.
+
+The admin console uses server-side service-role access for its operational CRUD API. The service-role key must never be exposed to browser code.
 
 ## Fixed administrator login
 
@@ -175,22 +179,32 @@ The member dashboard queries the authenticated user's:
 
 If records are missing, the UI shows a real setup/empty state instead of fake values.
 
-## Staff console
+## Admin console
 
-The admin dashboard queries live Supabase counts for:
+The admin console is now an operations workspace rather than a generic JSON dashboard.
 
-- members
-- rooms
-- available beds
-- applications
-- complaints
+Available areas include:
 
-Admin modules are available under:
+- Website content
+- Residents and guardians
+- Admissions
+- Documents
+- Stay and room allocation
+- Leave requests
+- Rooms and beds
+- Visitors
+- Maintenance
+- Inventory
+- Invoices and invoice items
+- Payments and expenses
+- Complaints
+- Announcements and notifications
+- Attendance
+- Staff tasks
+- Hostel/building/floor/pricing setup
+- Roles, profiles, settings, feature flags and audit log
 
-- `/admin/applications`
-- `/admin/rooms`
-- `/admin/billing`
-- `/admin/complaints`
+Each module supports database-backed list/search/create/update/delete operations. Related records use selectors instead of requiring users to type foreign-key UUIDs manually.
 
 ## Render
 
