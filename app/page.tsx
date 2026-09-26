@@ -7,7 +7,8 @@ import {
   MessageSquareWarning, ShieldCheck, Sparkles, UsersRound, Wifi, Utensils,
   Dumbbell, BookOpen, WashingMachine
 } from "lucide-react";
-import Link from "next/link";\nimport type { LucideIcon } from "lucide-react";
+import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
 
 const facilities: Array<[LucideIcon, string, string, string]> = [
   [Wifi, "High-speed Wi-Fi", "Connected study and living spaces", "cyan"],
