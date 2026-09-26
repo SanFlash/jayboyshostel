@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { createSupabaseServer } from "@/lib/supabase/server";
+import { getAdminContext, adminServiceClient } from "@/lib/auth/admin";
 
 const TABLES = new Set([
   "profiles","user_roles","hostels","buildings","floors","rooms","beds","members",
@@ -11,30 +11,14 @@ const TABLES = new Set([
 ]);
 const SUPER_ADMIN_TABLES = new Set(["user_roles","profiles","audit_logs","settings","feature_flags"]);
 
-function serviceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error("Server Supabase configuration is incomplete.");
-  return createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
-}
-
-async function authorize() {
-  const supabase = await createSupabaseServer();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
-  const staff = roles?.find((r) => ["super_admin","admin","manager","staff","accountant"].includes(r.role));
-  return staff ? { user, role: staff.role } : null;
-}
-
 export async function GET(request: Request) {
-  const auth = await authorize();
+  const auth = await getAdminContext();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const params = new URL(request.url).searchParams;
   const table = params.get("table") || "";
   const limit = Math.min(Math.max(Number(params.get("limit") || 100), 1), 250);
   if (!TABLES.has(table)) return NextResponse.json({ error: "Unsupported table." }, { status: 400 });
-  const db = serviceClient();
+  const db = adminServiceClient();
   const { data, error } = await db.from(table).select("*").limit(limit);
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   return NextResponse.json({ data: data ?? [] });
@@ -45,7 +29,7 @@ export async function PATCH(request: Request) { return mutate(request, "update")
 export async function DELETE(request: Request) { return mutate(request, "delete"); }
 
 async function mutate(request: Request, action: "insert" | "update" | "delete") {
-  const auth = await authorize();
+  const auth = await getAdminContext();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   let body: { table?: string; id?: string; selector?: Record<string, string | number | boolean>; data?: Record<string, unknown> };
@@ -56,7 +40,7 @@ async function mutate(request: Request, action: "insert" | "update" | "delete") 
   if (action !== "insert" && !body.id && !body.selector) return NextResponse.json({ error: "A record id or selector is required." }, { status: 400 });
   if (SUPER_ADMIN_TABLES.has(table) && auth.role !== "super_admin") return NextResponse.json({ error: "Only super admins can modify this resource." }, { status: 403 });
 
-  const db = serviceClient();
+  const db = adminServiceClient();
   try {
     if (action === "insert") {
       const { data, error } = await db.from(table).insert(body.data ?? {}).select().single();
@@ -94,7 +78,7 @@ async function mutate(request: Request, action: "insert" | "update" | "delete") 
   }
 }
 
-async function writeAudit(db: ReturnType<typeof serviceClient>, actorId: string, action: string, entityType: string, entityId: string | null, newData: unknown) {
+async function writeAudit(db: ReturnType<typeof adminServiceClient>, actorId: string, action: string, entityType: string, entityId: string | null, newData: unknown) {
   if (entityType === "audit_logs") return;
   await db.from("audit_logs").insert({
     actor_id: actorId,
