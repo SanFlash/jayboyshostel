@@ -58,7 +58,7 @@ export default function AdminModule({ module }: { module: string }) {
 
   function newRecord() {
     setSelected(null);
-    setJson("{}");
+    setJson(JSON.stringify(config.table === "members" ? { full_name: "", phone: "", email: "", address: "", status: "active" } : config.table === "rooms" ? { floor_id: "", room_number: "", capacity: 4, monthly_rate: 0, status: "available" } : {}, null, 2));
     setMessage("");
   }
 
@@ -74,7 +74,7 @@ export default function AdminModule({ module }: { module: string }) {
     try {
       const data = JSON.parse(json) as Row;
       const response = await fetch("/api/admin/data", {
-        method: selected?.id ? "PATCH" : "POST",
+        method: selected ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ table: config.table, id: selected?.id, selector: selected?.id ? undefined : selectorFor(selected), data }),
       });
