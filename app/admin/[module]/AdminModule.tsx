@@ -27,6 +27,26 @@ const MODULES: Record<string, { title: string; table: string; description: strin
 };
 
 type Row = Record<string, unknown>;
+const NEW_RECORDS: Record<string, Row> = {
+  members:{full_name:"",phone:"",email:"",father_name:"",mother_name:"",institution:"",course:"",academic_year:"",address:"",city:"",state:"Madhya Pradesh",postal_code:"",status:"active"},
+  hostels:{name:"Jay Boys Hostel",address:"",city:"Indore",state:"Madhya Pradesh",postal_code:"",phone:"",email:""},
+  buildings:{hostel_id:"",name:"",sort_order:0},
+  floors:{building_id:"",name:"",sort_order:0},
+  rooms:{floor_id:"",room_number:"",room_type:"4 Sharing",capacity:4,monthly_rate:0,daily_rate:0,security_deposit:0,status:"available",notes:""},
+  beds:{room_id:"",bed_label:"",status:"available"},
+  applications:{application_code:"JBS-",member_id:"",status:"submitted",admin_note:""},
+  tenancies:{member_id:"",room_id:"",bed_id:"",check_in_date:"",billing_start_date:"",expected_checkout_date:"",rent_amount:0,security_deposit:0,status:"active",notes:""},
+  pricing_plans:{hostel_id:"",name:"",room_type:"",monthly_rate:0,daily_rate:0,billing_method:"fixed_30_days",active:true},
+  invoices:{invoice_number:"JBS-INV-",member_id:"",period_start:"",period_end:"",due_date:"",subtotal:0,discount:0,late_fee:0,total:0,paid_amount:0,status:"draft"},
+  payments:{payment_number:"JBS-PAY-",member_id:"",invoice_id:"",amount:0,method:"cash",transaction_id:"",notes:""},
+  complaints:{member_id:"",room_id:"",title:"",description:"",category:"Other",priority:"normal",status:"submitted"},
+  announcements:{hostel_id:"",title:"",message:"",priority:"normal",audience:"all_members"},
+  document_types:{hostel_id:"",name:"",required_for_application:true,active:true},
+  settings:{key:"",value:{}},
+  feature_flags:{key:"",enabled:true},
+  user_roles:{user_id:"",role:"staff"},
+  notifications:{user_id:"",title:"",body:"",type:"general"}
+};
 
 export default function AdminModule({ module }: { module: string }) {
   const config = MODULES[module] ?? MODULES.applications;
@@ -58,7 +78,7 @@ export default function AdminModule({ module }: { module: string }) {
 
   function newRecord() {
     setSelected(null);
-    setJson(JSON.stringify(config.table === "members" ? { full_name: "", phone: "", email: "", address: "", status: "active" } : config.table === "rooms" ? { floor_id: "", room_number: "", capacity: 4, monthly_rate: 0, status: "available" } : {}, null, 2));
+    setJson(JSON.stringify(NEW_RECORDS[config.table] ?? {}, null, 2));
     setMessage("");
   }
 
@@ -143,7 +163,7 @@ export default function AdminModule({ module }: { module: string }) {
         <div className="panel admin-editor">
           <div className="panel-head"><div><span>{selected ? "EDIT RECORD" : "CREATE RECORD"}</span><h2>Data editor</h2></div><Save/></div>
           <p className="editor-help">Edit the fields below. Linked IDs must reference existing records; the server checks your permissions.</p>
-          <div style={{display:"grid",gap:12}}>{Object.entries(JSON.parse(json) as Row).map(([key,value]) => <label key={key} style={{display:"grid",gap:5}}>{key.replaceAll("_"," ")}<input type={typeof value === "number" ? "number" : key.includes("date") ? "date" : "text"} value={String(value ?? "")} onChange={e => setJson(previous => JSON.stringify({...JSON.parse(previous),[key]:typeof value === "number" ? Number(e.target.value) : e.target.value},null,2))}/></label>)}</div>
+          <div style={{display:"grid",gap:12}}>{Object.entries((()=>{try{return JSON.parse(json) as Row}catch{return {}}})()).map(([key,value]) => <label key={key} style={{display:"grid",gap:5}}>{key.replaceAll("_"," ")}<input type={typeof value === "number" ? "number" : key.includes("date") ? "date" : "text"} value={String(value ?? "")} onChange={e => setJson(previous => JSON.stringify({...JSON.parse(previous),[key]:typeof value === "number" ? Number(e.target.value) : e.target.value},null,2))}/></label>)}</div>
           <button className="button primary full" onClick={() => void save()} disabled={busy}><Save size={16}/> {busy ? "Saving…" : selected ? "Update record" : "Create record"}</button>
         </div>
       </section>
