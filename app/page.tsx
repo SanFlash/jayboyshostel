@@ -7,9 +7,9 @@ import {
   MessageSquareWarning, ShieldCheck, Sparkles, UsersRound, Wifi, Utensils,
   Dumbbell, BookOpen, WashingMachine
 } from "lucide-react";
-import Link from "next/link";
+import Link from "next/link";\nimport type { LucideIcon } from "lucide-react";
 
-const facilities = [
+const facilities: Array<[LucideIcon, string, string, string]> = [
   [Wifi, "High-speed Wi-Fi", "Connected study and living spaces", "cyan"],
   [ShieldCheck, "Secure living", "Resident-first access and safety", "violet"],
   [BookOpen, "Study spaces", "Quiet areas built for focus", "blue"],
@@ -18,7 +18,7 @@ const facilities = [
   [Dumbbell, "Lifestyle", "Comfort beyond just a bed", "emerald"],
 ];
 
-const steps = [
+const steps: Array<[string, string, LucideIcon, string]> = [
   ["01", "Apply online", FileCheck2, "Complete your admission details from any device."],
   ["02", "Get verified", BadgeCheck, "Documents and application status stay organized."],
   ["03", "Choose your stay", KeyRound, "Room and bed allocation is managed centrally."],
@@ -73,7 +73,7 @@ export default function HomePage() {
               {[
                 [ShieldCheck, "Secure access"], [Wifi, "Fast Wi-Fi"], [BellRing, "Smart alerts"], [CircleDollarSign, "Digital fees"]
               ].map(([Icon,label]) => {
-                const C = Icon as typeof ShieldCheck;
+                const C = Icon as LucideIcon;
                 return <div key={label as string} className="mini-pill"><C className="size-4 text-cyan-300"/>{label as string}</div>
               })}
             </div>
@@ -105,7 +105,7 @@ export default function HomePage() {
             [CalendarDays,"Stay timeline","Dates & reminders"],
             [ShieldCheck,"Protected","Role-based operations"]
           ].map(([Icon,title,desc],i)=>{
-            const C=Icon as typeof UsersRound;
+            const C=Icon as LucideIcon;
             return <motion.div whileHover={{y:-5}} key={title as string} className="stat-card">
               <div className="icon-tile"><C className="size-5"/></div><div className="mt-4 font-bold">{title as string}</div><div className="mt-1 text-xs text-slate-400">{desc as string}</div>
             </motion.div>
@@ -121,7 +121,7 @@ export default function HomePage() {
             ["03","Balanced living","Three-sharing experience","cyan",UsersRound],
             ["04","Social stay","Four-sharing experience","orange",UsersRound]
           ].map(([number,title,desc,color,Icon])=>{
-            const C=Icon as typeof BedDouble;
+            const C=Icon as LucideIcon;
             return <motion.div whileHover={{y:-8,rotateX:2}} key={title as string} className={"room-card "+color}>
               <div className="room-number">{number}</div><div className="room-icon"><C className="size-7"/></div>
               <h3>{title as string}</h3><p>{desc as string}</p>
@@ -136,7 +136,7 @@ export default function HomePage() {
           <div className="section-heading"><div className="section-kicker">HOSTEL LIFE</div><h2>More than a room key.</h2><p>A colourful, comfortable experience that keeps the practical things simple.</p></div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {facilities.map(([Icon,title,desc,color])=>{
-              const C=Icon as typeof Wifi;
+              const C=Icon as LucideIcon;
               return <motion.div whileHover={{scale:1.02,y:-4}} key={title as string} className={"facility-card "+color}><div className="facility-icon"><C className="size-6"/></div><h3>{title as string}</h3><p>{desc as string}</p></motion.div>
             })}
           </div>
@@ -167,7 +167,7 @@ export default function HomePage() {
       <section id="process" className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <div className="section-heading"><div className="section-kicker">SIMPLE ADMISSION</div><h2>From application to check-in.</h2></div>
         <div className="mt-10 grid gap-4 md:grid-cols-4">
-          {steps.map(([num,title,Icon,desc])=>{const C=Icon as typeof FileCheck2;return <motion.div whileHover={{y:-5}} key={num as string} className="step-card"><span>{num as string}</span><C className="mt-8 size-6 text-cyan-300"/><h3>{title as string}</h3><p>{desc as string}</p></motion.div>})}
+          {steps.map(([num,title,Icon,desc])=>{const C=Icon as LucideIcon;return <motion.div whileHover={{y:-5}} key={num as string} className="step-card"><span>{num as string}</span><C className="mt-8 size-6 text-cyan-300"/><h3>{title as string}</h3><p>{desc as string}</p></motion.div>})}
         </div>
       </section>
 
