@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650" fill="none">
+<defs>
+ <linearGradient id="wall" x1="150" y1="120" x2="720" y2="560"><stop stop-color="#334155"/><stop offset=".45" stop-color="#172554"/><stop offset="1" stop-color="#0f172a"/></linearGradient>
+ <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#67e8f9" stop-opacity=".9"/><stop offset="1" stop-color="#2563eb" stop-opacity=".35"/></linearGradient>
+ <linearGradient id="roof" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#4f46e5"/></linearGradient>
+ <filter id="shadow"><feDropShadow dx="0" dy="25" stdDeviation="22" flood-color="#000" flood-opacity=".35"/></filter>
+</defs>
+<ellipse cx="460" cy="585" rx="310" ry="35" fill="#020617" opacity=".55"/>
+<g filter="url(#shadow)">
+ <path d="M145 500V210l280-130 330 150v270L425 620 145 500Z" fill="url(#wall)" stroke="#64748b" stroke-opacity=".35"/>
+ <path d="M425 80 755 230 475 370 145 210 425 80Z" fill="url(#roof)" opacity=".95"/>
+ <path d="M475 370 755 230v270L475 640V370Z" fill="#0b1224"/>
+ <path d="M425 80v285L145 500V210L425 80Z" fill="#1e293b"/>
+</g>
+<g opacity=".9">
+ <path d="M205 250 245 230v55l-40 20v-55Z" fill="url(#glass)"/><path d="M275 216 315 197v55l-40 20v-56Z" fill="url(#glass)"/>
+ <path d="M345 181 385 162v55l-40 20v-56Z" fill="url(#glass)"/>
+ <path d="M205 340 245 320v55l-40 20v-55Z" fill="url(#glass)"/><path d="M275 306 315 287v55l-40 20v-56Z" fill="url(#glass)"/>
+ <path d="M345 272 385 253v55l-40 20v-56Z" fill="url(#glass)"/>
+</g>
+<g fill="#f8fafc">
+ <rect x="430" y="415" width="48" height="80" rx="8"/><rect x="500" y="380" width="48" height="80" rx="8"/><rect x="570" y="345" width="48" height="80" rx="8"/>
+</g>
+<g fill="#22d3ee" opacity=".8"><circle cx="454" cy="435" r="4"/><circle cx="524" cy="400" r="4"/><circle cx="594" cy="365" r="4"/></g>
+<g>
+ <circle cx="735" cy="105" r="34" fill="#22d3ee" fill-opacity=".12" stroke="#67e8f9" stroke-opacity=".45"/>
+ <path d="M720 105h30M735 90v30" stroke="#67e8f9" stroke-width="3" stroke-linecap="round"/>
+ <circle cx="105" cy="125" r="25" fill="#a78bfa" fill-opacity=".13" stroke="#c4b5fd" stroke-opacity=".4"/>
+ <path d="M95 125h20M105 115v20" stroke="#c4b5fd" stroke-width="3" stroke-linecap="round"/>
+</g>
+</svg>
