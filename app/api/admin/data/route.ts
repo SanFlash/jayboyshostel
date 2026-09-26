@@ -11,9 +11,11 @@ const TABLES = new Set([
 ]);
 const SUPER_ADMIN_TABLES = new Set(["user_roles","profiles","audit_logs","settings","feature_flags","site_content"]);
 
-function cleanData(input: Record<string, unknown> = {}) {
+function cleanData(input: Record<string, unknown> = {}, table?: string) {
   const data = { ...input };
-  for (const key of ["id","created_at","updated_at"]) delete data[key];
+  if (table !== "profiles") delete data.id;
+  delete data.created_at;
+  delete data.updated_at;
   return data;
 }
 
@@ -89,7 +91,7 @@ async function mutate(request: Request, action: "insert" | "update" | "delete") 
 
   try {
     if (action === "insert") {
-      const data = cleanData(body.data);
+      const data = cleanData(body.data, table);
       if (table === "members") generatedValue(table, data, "member_code", "JBS-M");
       if (table === "applications") generatedValue(table, data, "application_code", "JBS-APP");
       if (table === "invoices") generatedValue(table, data, "invoice_number", "JBS-INV");
