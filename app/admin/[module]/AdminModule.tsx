@@ -127,7 +127,7 @@ export default function AdminModule({module}:{module:string}){
   useEffect(()=>{setSelected(null);setForm(blank(config));setQuery("");setAdvanced(false);void loadRelations()},[config.table]);
   useEffect(()=>{const t=setTimeout(()=>void load(),250);return()=>clearTimeout(t)},[config.table,query]);
 
-  function edit(row:Row){const next:Row={};for(const f of config.fields)next[f.key]=f.type==="date"||f.type==="datetime-local"?inputDate(row[f.key],f.type):f.type==="json"?JSON.stringify(row[f.key]??{},null,2):row[f.key]??(f.type==="select"&&f.options?.[0]?.value)||"";setSelected(row);setForm(next);setError("");setMessage("")}
+  function edit(row:Row){const next:Row={};for(const f of config.fields)next[f.key]=f.type==="date"||f.type==="datetime-local"?inputDate(row[f.key],f.type):f.type==="json"?JSON.stringify(row[f.key]??{},null,2):row[f.key]??(f.type==="select"?f.options?.[0]?.value??"":"");setSelected(row);setForm(next);setError("");setMessage("")}
   function clear(){setSelected(null);setForm(blank(config));setError("");setMessage("");setAdvanced(false)}
   function setField(k:string,v:any){setForm((x:Row)=>({...x,[k]:v}))}
   function selector(row:Row|null){if(!row)return undefined;if(["settings","feature_flags","site_content"].includes(config.table))return{key:String(row.key)};if(config.table==="user_roles")return{user_id:String(row.user_id),role:String(row.role)};return undefined}
