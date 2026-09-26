@@ -62,25 +62,30 @@ export async function POST(request: Request) {
       userId = data.user.id;
     }
 
+    // Database role/profile repair is best-effort. The signed admin session below
+    // is the authoritative console credential, so an unapplied migration must
+    // never turn a valid configured admin password into a login failure.
+    const setupWarnings: string[] = [];
     const { error: profileError } = await admin.from("profiles").upsert({
       id: userId,
       full_name: "Jay Boys Hostel Admin",
       email: adminEmail,
       is_active: true,
     });
-    if (profileError) throw profileError;
+    if (profileError) setupWarnings.push("profiles table is not ready");
 
     const { error: roleError } = await admin.from("user_roles").upsert({
       user_id: userId,
       role: "super_admin",
     });
-    if (roleError) throw roleError;
+    if (roleError) setupWarnings.push("user_roles table is not ready");
 
     const response = NextResponse.json({
       ok: true,
       provisioned: true,
       role: "super_admin",
       redirect: "/admin",
+      setupWarnings,
     });
 
     response.cookies.set({
