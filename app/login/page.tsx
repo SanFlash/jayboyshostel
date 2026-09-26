@@ -23,19 +23,27 @@ export default function LoginPage() {
     try {
       const normalizedEmail = email.trim().toLowerCase();
 
-      // A valid configured admin credential automatically provisions the
-      // Supabase Auth user + profile + super_admin role before sign-in.
-      if (mode === "staff" && normalizedEmail === ADMIN_EMAIL) {
-        const provision = await fetch("/api/admin/bootstrap", {
+      if (mode === "staff") {
+        if (normalizedEmail !== ADMIN_EMAIL) {
+          throw new Error("Use the configured Jay Boys Hostel administrator account.");
+        }
+
+        // Staff authentication is handled by the server. This avoids depending
+        // on a browser Supabase session/cookie surviving the redirect.
+        const response = await fetch("/api/admin/bootstrap", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
           body: JSON.stringify({ email: normalizedEmail, password }),
         });
-
-        if (!provision.ok) {
-          const payload = await provision.json().catch(() => null);
-          throw new Error(payload?.error || "Admin account is not configured on the server.");
+        const payload = await response.json().catch(() => null);
+        if (!response.ok || !payload?.ok) {
+          throw new Error(payload?.error || "Invalid administrator credentials.");
         }
+
+        router.replace("/admin");
+        router.refresh();
+        return;
       }
 
       const { error: signInError } = await createSupabaseBrowser().auth.signInWithPassword({
@@ -45,7 +53,8 @@ export default function LoginPage() {
 
       if (signInError) throw signInError;
 
-      router.push(mode === "staff" ? "/admin" : "/member");
+      router.replace("/member");
+      router.refresh();
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to sign in.");
