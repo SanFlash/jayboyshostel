@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Database, Edit3, Plus, RefreshCw, Save, Trash2 } from "lucide-react";
 
@@ -50,12 +50,6 @@ export default function AdminModule({ module }: { module: string }) {
 
   useEffect(() => { void load(); }, [config.table]);
 
-  const columns = useMemo(() => {
-    const keys = new Set<string>();
-    rows.slice(0, 20).forEach((row) => Object.keys(row).forEach((key) => keys.add(key)));
-    return Array.from(keys).slice(0, 8);
-  }, [rows]);
-
   function edit(row: Row) {
     setSelected(row);
     setJson(JSON.stringify(row, null, 2));
@@ -88,7 +82,7 @@ export default function AdminModule({ module }: { module: string }) {
   }
 
   async function remove(row: Row) {
-    if (!row.id || !window.confirm("Delete this record permanently? This action cannot be undone.")) return;
+    if ((!row.id && !selectorFor(row)) || !window.confirm("Delete this record permanently? This action cannot be undone.")) return;
     setBusy(true); setMessage("");
     try {
       const response = await fetch("/api/admin/data", {
