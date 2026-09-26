@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { getAdminContext, adminServiceClient } from "@/lib/auth/admin";
 
 const TABLES = new Set([
