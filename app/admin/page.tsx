@@ -1,10 +1,8 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { AlertTriangle, BedDouble, Building2, ClipboardList, FileCheck2, IndianRupee, LogOut, MessageSquareWarning, Users } from "lucide-react";
 import { requireAdmin } from "@/lib/auth/admin";
-const staffRoles=new Set(["super_admin","admin","manager","staff","accountant"]);
 export default async function AdminPage(){
  const { db: supabase } = await requireAdmin();
  const [members,apps,rooms,beds,complaints,pending]=await Promise.all([
