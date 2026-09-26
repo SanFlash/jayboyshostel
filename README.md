@@ -113,6 +113,24 @@ The schema covers profiles, roles, hostels, buildings, floors, rooms, beds, memb
 
 Review the RLS and storage policies before using real resident documents or financial information.
 
+## Fixed administrator login
+
+The staff login is configured for the Jay Boys Hostel administrator:
+
+```text
+Email: jayboys@gmail.com
+```
+
+Set the password as the server-only environment variable:
+
+```text
+ADMIN_EMAIL=jayboys@gmail.com
+ADMIN_PASSWORD=Rathod@Jay78
+```
+
+Do **not** commit `ADMIN_PASSWORD` to GitHub. On the first valid staff login with that configured email/password, `/api/admin/bootstrap` automatically creates or repairs the Supabase Auth user, profile and `super_admin` role before normal sign-in.
+
+If the deployed application still reports invalid credentials, verify `ADMIN_PASSWORD` is present in the deployed service environment variables and redeploy.
 ## Authentication
 
 The application uses:
