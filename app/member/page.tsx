@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Bell, BedDouble, Building2, FileText, IndianRupee, LifeBuoy, LogOut, ShieldCheck } from "lucide-react";
