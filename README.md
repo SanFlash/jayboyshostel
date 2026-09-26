@@ -1,0 +1,32 @@
+# Jay Boys Hostel — Digital Hostel Management Platform
+
+Production-oriented hostel management application for Jay Boys Hostel, Vinoba Nagar, Indore.
+
+## Stack
+- Next.js + React + TypeScript
+- Tailwind CSS
+- Supabase PostgreSQL/Auth/Storage
+- Zod validation
+- Recharts
+- Framer Motion
+- Playwright + Vitest
+
+## Modules
+Public website, resident portal, admin command center, applications, document verification, buildings/floors/rooms/beds, check-in/out, billing, payments, reminders, notifications, announcements, complaints, reports, audit logs, settings and PWA support.
+
+## Local development
+1. Install Node.js 20+.
+2. Copy `.env.example` to `.env.local`.
+3. Create a Supabase project.
+4. Run SQL in `supabase/migrations` in order.
+5. Configure Storage buckets/policies as documented.
+6. Install: `npm install`
+7. Start: `npm run dev`
+8. Validate: `npm run lint && npm run typecheck && npm run build`
+
+## Deployment
+Vercel: `npm run build`, `npm start`.
+Render: `npm ci && npm run build`, `npm start`.
+For reminders use a protected idempotent cron/worker; see docs/RENDER.md.
+
+See docs/SUPABASE.md, docs/VERCEL.md, docs/RENDER.md, docs/SECURITY.md and docs/ARCHITECTURE.md.
