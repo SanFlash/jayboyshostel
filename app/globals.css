@@ -27,3 +27,42 @@
 @media(max-width:1150px){.admin-app{grid-template-columns:220px 1fr}.admin-metric-grid{grid-template-columns:repeat(4,1fr)}.admin-dashboard-grid{grid-template-columns:1fr}.admin-content{padding-inline:25px}}
 @media(max-width:800px){.admin-app{display:block}.admin-sidebar{display:none}.admin-mobile-head{display:flex;height:64px;padding:0 15px;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);background:#09111eee;position:sticky;top:0;z-index:10}.admin-content{padding:28px 15px 55px}.admin-page-head{align-items:flex-start;flex-direction:column}.admin-page-head h1{font-size:43px}.admin-head-actions{width:100%}.admin-head-actions .button{flex:1}.admin-metric-grid{grid-template-columns:repeat(2,1fr)}.admin-editor-grid{grid-template-columns:1fr}.admin-form-card{position:static}.admin-control-grid{grid-template-columns:1fr}.admin-json-editor{min-height:350px}}
 @media(max-width:460px){.admin-metric-grid{grid-template-columns:1fr 1fr}.admin-stat{min-height:105px}.admin-stat b{font-size:24px}.admin-table>div{grid-template-columns:1fr auto}.admin-table a{display:none}}
+
+
+/* v3 OPERATIONS WORKSPACE */
+.admin-workbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
+.admin-search{display:flex;align-items:center;gap:9px;min-width:280px;max-width:560px;flex:1;padding:12px 14px;border:1px solid rgba(255,255,255,.08);border-radius:13px;background:#07101d;color:#6e7e97}
+.admin-search input{width:100%;border:0;outline:0;background:transparent;color:#eaf2ff;font-size:12px}
+.admin-search:focus-within{border-color:#55e6c150;box-shadow:0 0 0 3px #55e6c10a}
+.admin-count{font-size:10px;color:#687993;white-space:nowrap}
+.admin-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.admin-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.admin-field.wide{grid-column:1/-1}
+.admin-field>span{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#72839c;font-weight:800}
+.admin-field input,.admin-field select,.admin-field textarea{width:100%;border:1px solid rgba(255,255,255,.08);border-radius:11px;background:#07101d;color:#dce7f7;outline:0;padding:11px 12px;font-size:11px}
+.admin-field input:focus,.admin-field select:focus,.admin-field textarea:focus{border-color:#55e6c14a;box-shadow:0 0 0 3px #55e6c10a}
+.admin-field select{appearance:auto}
+.admin-field textarea{min-height:90px;resize:vertical;line-height:1.55}
+.admin-field small{font-size:9px;color:#5e6e86;line-height:1.4}
+.admin-code-field{font-family:ui-monospace,SFMono-Regular,Consolas,monospace!important;min-height:180px!important}
+.admin-advanced-toggle{margin-top:12px;width:100%;border:1px dashed rgba(255,255,255,.1);background:#ffffff03;color:#71829b;border-radius:10px;padding:9px;font-size:10px;cursor:pointer}
+.admin-advanced-toggle:hover{color:#fff;background:#ffffff06}
+.admin-form-actions{display:flex;gap:8px;margin-top:14px}
+.admin-form-actions .button{flex:1}
+.admin-form-note{font-size:9px;color:#5e6d84;line-height:1.5;margin:12px 0 0}
+.admin-success,.admin-error{display:flex;align-items:center;gap:8px}
+.admin-success svg{color:#55e6c1;flex-shrink:0}.admin-error svg{color:#ff8a72;flex-shrink:0}
+.admin-record{cursor:default}
+.admin-record-actions button{cursor:pointer}
+.admin-record-actions .icon-button{background:#ffffff03}
+.admin-record-actions .icon-button:hover{background:#ffffff0b}
+@media(max-width:800px){
+  .admin-workbar{align-items:stretch;flex-direction:column}.admin-search{max-width:none;min-width:0}
+  .admin-form-grid{grid-template-columns:1fr}.admin-field.wide{grid-column:auto}
+  .admin-form-actions{position:sticky;bottom:8px;padding:8px;border-radius:13px;background:#091321e8;backdrop-filter:blur(12px);z-index:5}
+}
+@media(max-width:460px){
+  .admin-content{padding-inline:11px}.admin-card{padding:15px;border-radius:17px}
+  .admin-page-head h1{font-size:37px}.admin-page-head p{font-size:11px}
+  .admin-head-actions .button{font-size:11px;padding:11px 10px}
+}
