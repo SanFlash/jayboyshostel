@@ -65,21 +65,27 @@ async function mutate(request: Request, action: "insert" | "update" | "delete") 
       return NextResponse.json({ ok: true, data });
     }
 
-    // The table name is intentionally validated against the allow-list above.
-    // Supabase cannot infer a typed table union from a runtime string, so keep
-    // the mutation builder dynamic while preserving the runtime query behavior.
-    const query: any = db.from(table);
-    if (body.id) query.eq("id", body.id);
-    else for (const [key, value] of Object.entries(body.selector ?? {})) query.eq(key, value);
+    // Build the mutation first, then attach filters. Filtering a bare
+    // PostgrestQueryBuilder does not work and can cause runtime failures.
+    const filters = (query: any) => {
+      if (body.id) return query.eq("id", body.id);
+      const entries = Object.entries(body.selector ?? {});
+      if (!entries.length) throw new Error("At least one selector field is required.");
+      for (const [key, value] of entries) {
+        if (!/^[a-z][a-z0-9_]*$/.test(key)) throw new Error("Invalid selector field.");
+        query = query.eq(key, value);
+      }
+      return query;
+    };
 
     if (action === "update") {
-      const { data, error } = await query.update(body.data ?? {}).select().single();
+      const { data, error } = await filters(db.from(table).update(body.data ?? {})).select().single();
       if (error) return NextResponse.json({ error: error.message }, { status: 400 });
       await writeAudit(db, auth.user.id, "update", table, data?.id ?? body.id ?? null, data);
       return NextResponse.json({ ok: true, data });
     }
 
-    const { data, error } = await query.delete().select().single();
+    const { data, error } = await filters(db.from(table).delete()).select().single();
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
     await writeAudit(db, auth.user.id, "delete", table, data?.id ?? body.id ?? null, null);
     return NextResponse.json({ ok: true, data });
