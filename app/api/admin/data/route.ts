@@ -30,8 +30,12 @@ export async function GET(request: Request) {
   const table = params.get("table") || "";
   const limit = Math.min(Math.max(Number(params.get("limit") || 250), 1), 500);
   const search = params.get("q")?.trim();
-  const order = params.get("order") || "created_at";
+  const requestedOrder = params.get("order") || "";
   const ascending = params.get("ascending") === "true";
+  const defaultOrder: Record<string,string> = {
+    settings: "updated_at", feature_flags: "key", site_content: "updated_at",
+  };
+  const order = requestedOrder || defaultOrder[table] || "created_at";
 
   if (!TABLES.has(table)) return NextResponse.json({ error: "Unsupported table." }, { status: 400 });
   if (!/^[a-z][a-z0-9_]*$/.test(order)) return NextResponse.json({ error: "Invalid order field." }, { status: 400 });
