@@ -4,7 +4,7 @@
 
 Use Node.js `24.x`.
 
-Vercel's current Node 24 runtime is supported for builds/functions. Node 20 is being deprecated for new builds, so this repository now targets Node 24. citeturn0search1turn0search0
+Vercel's current Node 24 runtime is supported for builds/functions. Node 20 is being deprecated for new builds, so this repository now targets Node 24.
 
 Set:
 
