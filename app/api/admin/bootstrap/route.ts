@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { ADMIN_SESSION_COOKIE, ADMIN_SESSION_MAX_AGE, createAdminSession } from "@/lib/auth/admin-session";
 
 export async function POST(request: Request) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const adminEmail = process.env.ADMIN_EMAIL || "jayboys@gmail.com";
+  const adminEmail = (process.env.ADMIN_EMAIL || "jayboys@gmail.com").trim().toLowerCase();
   const adminPassword = process.env.ADMIN_PASSWORD;
 
   if (!supabaseUrl || !serviceRoleKey || !adminPassword) {
@@ -21,9 +22,8 @@ export async function POST(request: Request) {
   const email = body.email?.trim().toLowerCase();
   const password = body.password || "";
 
-  // This endpoint only provisions the one configured hostel administrator.
-  if (email !== adminEmail.toLowerCase() || password !== adminPassword) {
-    return NextResponse.json({ ok: false, provisioned: false });
+  if (email !== adminEmail || password !== adminPassword) {
+    return NextResponse.json({ error: "Invalid administrator credentials." }, { status: 401 });
   }
 
   const admin = createClient(supabaseUrl, serviceRoleKey, {
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     if (listError) throw listError;
 
     const found = existing.users.find(
-      (user) => user.email?.toLowerCase() === adminEmail.toLowerCase(),
+      (user) => user.email?.toLowerCase() === adminEmail,
     );
 
     let userId: string;
@@ -76,7 +76,24 @@ export async function POST(request: Request) {
     });
     if (roleError) throw roleError;
 
-    return NextResponse.json({ ok: true, provisioned: true });
+    const response = NextResponse.json({
+      ok: true,
+      provisioned: true,
+      role: "super_admin",
+      redirect: "/admin",
+    });
+
+    response.cookies.set({
+      name: ADMIN_SESSION_COOKIE,
+      value: createAdminSession(userId, adminEmail),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: ADMIN_SESSION_MAX_AGE,
+    });
+
+    return response;
   } catch (error) {
     console.error("Admin provisioning failed", error);
     return NextResponse.json(
