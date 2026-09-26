@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import { createSupabaseServer } from "@/lib/supabase/server";
 
 export const STAFF_ROLES = ["super_admin","admin","manager","staff","accountant"] as const;
