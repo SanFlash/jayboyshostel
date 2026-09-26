@@ -1,0 +1,2 @@
+import {describe,expect,it} from "vitest";import {calculateBilling} from "../lib/billing";
+describe("calculateBilling",()=>{it("calculates a 15 day fixed-basis stay",()=>{const r=calculateBilling({monthlyRate:7000,checkIn:"2026-09-10",checkOut:"2026-09-25"});expect(r.stayDays).toBe(15);expect(r.accommodation).toBe(3500);expect(r.total).toBe(3500)});it("applies adjustments",()=>{const r=calculateBilling({monthlyRate:7000,checkIn:"2026-09-01",checkOut:"2026-09-11",additionalCharges:500,discounts:200,lateFee:100});expect(r.total).toBe(2733)})});
