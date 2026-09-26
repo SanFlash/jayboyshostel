@@ -9,8 +9,7 @@ const TABLES = new Set([
   "announcements","notifications","complaints","complaint_comments","audit_logs",
   "settings","feature_flags",
 ]);
-
-const SERVICE_TABLES = new Set(["user_roles","profiles","audit_logs"]);
+const SUPER_ADMIN_TABLES = new Set(["user_roles","profiles","audit_logs","settings","feature_flags"]);
 
 function serviceClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -24,90 +23,75 @@ async function authorize() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
   const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
-  const allowed = roles?.some((r) => ["super_admin", "admin", "manager", "staff", "accountant"].includes(r.role));
-  return allowed ? { user, role: roles?.find((r) => r.role === "super_admin")?.role ?? "staff" } : null;
+  const staff = roles?.find((r) => ["super_admin","admin","manager","staff","accountant"].includes(r.role));
+  return staff ? { user, role: staff.role } : null;
 }
 
 export async function GET(request: Request) {
   const auth = await authorize();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const url = new URL(request.url);
-  const table = url.searchParams.get("table") || "";
-  const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 100), 1), 250);
+  const table = new URL(request.url).searchParams.get("table") || "";
+  const limit = Math.min(Math.max(Number(new URL(request.url).searchParams.get("limit") || 100), 1), 250);
   if (!TABLES.has(table)) return NextResponse.json({ error: "Unsupported table." }, { status: 400 });
-
   const db = serviceClient();
   const { data, error } = await db.from(table).select("*").limit(limit);
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   return NextResponse.json({ data: data ?? [] });
 }
 
-export async function POST(request: Request) {
-  return mutate(request, "insert");
-}
-
-export async function PATCH(request: Request) {
-  return mutate(request, "update");
-}
-
-export async function DELETE(request: Request) {
-  return mutate(request, "delete");
-}
+export async function POST(request: Request) { return mutate(request, "insert"); }
+export async function PATCH(request: Request) { return mutate(request, "update"); }
+export async function DELETE(request: Request) { return mutate(request, "delete"); }
 
 async function mutate(request: Request, action: "insert" | "update" | "delete") {
   const auth = await authorize();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  let body: { table?: string; id?: string; data?: Record<string, unknown> };
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
-  }
+  let body: { table?: string; id?: string; selector?: Record<string, string | number | boolean>; data?: Record<string, unknown> };
+  try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid JSON." }, { status: 400 }); }
 
   const table = body.table || "";
   if (!TABLES.has(table)) return NextResponse.json({ error: "Unsupported table." }, { status: 400 });
-
-  if (action !== "insert" && !body.id) {
-    return NextResponse.json({ error: "A record id is required." }, { status: 400 });
-  }
-
-  // Only super admins can change roles, audit history, or system configuration.
-  if (SERVICE_TABLES.has(table) && auth.role !== "super_admin") {
-    return NextResponse.json({ error: "Only super admins can modify this resource." }, { status: 403 });
-  }
+  if (action !== "insert" && !body.id && !body.selector) return NextResponse.json({ error: "A record id or selector is required." }, { status: 400 });
+  if (SUPER_ADMIN_TABLES.has(table) && auth.role !== "super_admin") return NextResponse.json({ error: "Only super admins can modify this resource." }, { status: 403 });
 
   const db = serviceClient();
   try {
-    let result: { data: any; error: any };
-
     if (action === "insert") {
-      result = await db.from(table).insert(body.data ?? {}).select().single();
-    } else if (action === "update") {
-      result = await db.from(table).update(body.data ?? {}).eq("id", body.id).select().single();
-    } else {
-      result = await db.from(table).delete().eq("id", body.id).select().single();
+      const { data, error } = await db.from(table).insert(body.data ?? {}).select().single();
+      if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+      await writeAudit(db, auth.user.id, "insert", table, data?.id ?? null, data);
+      return NextResponse.json({ ok: true, data });
     }
 
-    if (result.error) return NextResponse.json({ error: result.error.message }, { status: 400 });
+    let query = db.from(table);
+    if (body.id) query = query.eq("id", body.id);
+    else for (const [key, value] of Object.entries(body.selector ?? {})) query = query.eq(key, value);
 
-    if (table !== "audit_logs") {
-      await db.from("audit_logs").insert({
-        actor_id: auth.user.id,
-        action,
-        entity_type: table,
-        entity_id: result.data?.id ?? body.id ?? null,
-        new_data: action === "delete" ? null : result.data,
-        reason: "Admin console mutation",
-      });
+    if (action === "update") {
+      const { data, error } = await query.update(body.data ?? {}).select().single();
+      if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+      await writeAudit(db, auth.user.id, "update", table, data?.id ?? body.id ?? null, data);
+      return NextResponse.json({ ok: true, data });
     }
 
-    return NextResponse.json({ ok: true, data: result.data });
+    const { data, error } = await query.delete().select().single();
+    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    await writeAudit(db, auth.user.id, "delete", table, data?.id ?? body.id ?? null, null);
+    return NextResponse.json({ ok: true, data });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Mutation failed." },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Mutation failed." }, { status: 500 });
   }
+}
+
+async function writeAudit(db: ReturnType<typeof serviceClient>, actorId: string, action: string, entityType: string, entityId: string | null, newData: unknown) {
+  if (entityType === "audit_logs") return;
+  await db.from("audit_logs").insert({
+    actor_id: actorId,
+    action,
+    entity_type: entityType,
+    entity_id: entityId,
+    new_data: newData,
+    reason: "Admin console mutation",
+  });
 }
