@@ -26,7 +26,7 @@ const links=[
   ["Hostel Setup","/admin/hostels",Building2,"Hostel, buildings, floors and pricing"],
   ["Security & Roles","/admin/roles",ShieldCheck,"Access roles and permissions"],
   ["System Settings","/admin/settings",Settings2,"Platform configuration and feature flags"],
-  ["Audit Log","/admin/audit",Activity,"Administrative activity history"]
+  ["Audit Log","/admin/audit",Activity,"Administrative activity history"],["Analytics","/admin/analytics",Activity,"Live operational metrics and workflow overview"],["Calendar","/admin/calendar",CalendarDays,"Leave, visitors, tasks and maintenance timeline"],["System Health","/admin/health",ShieldCheck,"Deployment, environment and database diagnostics"]
 ] as const;
 
 export default async function AdminPage(){
@@ -65,9 +65,19 @@ export default async function AdminPage(){
   </aside>
   <section className="admin-main"><header className="admin-mobile-head"><Link href="/admin" className="brand"><span className="brand-mark"><Building2 size={17}/></span><span><b>JAY BOYS</b><small>ADMIN</small></span></Link><Link href="/api/auth/signout" className="icon-button"><LogOut size={15}/></Link></header>
    <div className="admin-content">
-    <div className="admin-page-head"><div><div className="eyebrow"><Activity size={14}/> LIVE OPERATIONS / SUPER ADMIN</div><h1>Command center.</h1><p>One operational workspace for admissions, residents, rooms, finance, support, communication, staff work and the public website.</p></div><div className="admin-head-actions"><AdminSetupButton/><Link href="/admin/website" className="button primary"><Megaphone size={15}/> Edit website</Link></div></div>
+    <div className="admin-page-head"><div><div className="eyebrow"><Activity size={14}/> LIVE OPERATIONS / SUPER ADMIN · V4</div><h1>Command center.</h1><p>One operational workspace for admissions, residents, rooms, finance, support, communication, staff work, analytics, calendar and the public website.</p></div><div className="admin-head-actions"><AdminSetupButton/><Link href="/admin/website" className="button primary"><Megaphone size={15}/> Edit website</Link></div></div>
     <section className="admin-metric-grid">{metrics.map(([label,value,Icon])=><article className="admin-stat" key={label}><div><span>{label.toUpperCase()}</span><b>{value}</b></div><Icon/></article>)}</section>
     <section className="admin-dashboard-grid">
+      <div className="admin-card" style={{gridColumn:"1/-1"}}>
+        <div className="admin-card-head"><div><span>PLATFORM TOOLS</span><h2>Operate · inspect · verify</h2></div><ShieldCheck/></div>
+        <div className="admin-control-grid">
+          <Link href="/admin/analytics"><Activity/><span><b>Analytics</b><small>Live operational counts and workflow overview.</small></span></Link>
+          <Link href="/admin/calendar"><CalendarDays/><span><b>Calendar</b><small>Shared operational timeline.</small></span></Link>
+          <Link href="/admin/health"><ShieldCheck/><span><b>System Health</b><small>Check environment and required database tables.</small></span></Link>
+          <Link href="/admin/settings"><Settings2/><span><b>System Settings</b><small>Feature flags and platform configuration.</small></span></Link>
+        </div>
+      </div>
+
       <div className="admin-card"><div className="admin-card-head"><div><span>ADMISSIONS QUEUE</span><h2>Requiring attention</h2></div><ClipboardList/></div>{pending.data?.length?<div className="admin-table">{pending.data.map(a=><div key={a.id}><span><b>{a.application_code}</b><small>{a.status.replaceAll("_"," ")}</small></span><time>{new Date(a.created_at).toLocaleDateString("en-IN")}</time><Link href="/admin/applications">Open</Link></div>)}</div>:<div className="empty-state">No pending applications. New admissions will appear here.</div>}</div>
       <div className="admin-card"><div className="admin-card-head"><div><span>OPERATIONS MAP</span><h2>Run the hostel from here</h2></div><Settings2/></div><div className="admin-control-grid">{links.map(([title,href,Icon,desc])=><Link href={href} key={title}><Icon/><span><b>{title}</b><small>{desc}</small></span></Link>)}</div></div>
     </section>
