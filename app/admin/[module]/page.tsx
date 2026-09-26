@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { requireAdmin } from "@/lib/auth/admin";
 import AdminModule from "./AdminModule";
 
