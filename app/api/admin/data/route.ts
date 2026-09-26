@@ -6,9 +6,9 @@ const TABLES = new Set([
   "member_guardians","applications","application_status_history","document_types",
   "documents","tenancies","pricing_plans","invoices","invoice_items","payments",
   "announcements","notifications","complaints","complaint_comments","audit_logs",
-  "settings","feature_flags",
+  "settings","feature_flags","site_content",
 ]);
-const SUPER_ADMIN_TABLES = new Set(["user_roles","profiles","audit_logs","settings","feature_flags"]);
+const SUPER_ADMIN_TABLES = new Set(["user_roles","profiles","audit_logs","settings","feature_flags","site_content"]);
 
 export async function GET(request: Request) {
   const auth = await getAdminContext();
