@@ -129,10 +129,10 @@ Set the password as the server-only environment variable:
 
 ```text
 ADMIN_EMAIL=jayboys@gmail.com
-ADMIN_PASSWORD=Rathod@Jay78
+ADMIN_PASSWORD=SET_A_NEW_SERVER_ONLY_PASSWORD
 ```
 
-Do **not** commit `ADMIN_PASSWORD` to GitHub. On the first valid staff login with that configured email/password, `/api/admin/bootstrap` automatically creates or repairs the Supabase Auth user, profile and `super_admin` role before normal sign-in.
+Do **not** commit `ADMIN_PASSWORD` to GitHub. On the first valid staff login with that configured email/password, `/api/admin/bootstrap` creates or repairs the Supabase Auth user and best-effort profile/role records, then issues the signed admin session. A missing role migration no longer blocks a valid configured administrator from entering the console.
 
 If the deployed application still reports invalid credentials, verify `ADMIN_PASSWORD` is present in the deployed service environment variables and redeploy.
 ## Authentication
@@ -179,9 +179,9 @@ The member dashboard queries the authenticated user's:
 
 If records are missing, the UI shows a real setup/empty state instead of fake values.
 
-## Admin console
+## Admin console — V4
 
-The admin console is now an operations workspace rather than a generic JSON dashboard.
+The admin console is now an operations workspace rather than a generic JSON dashboard. The V4 framework adds a command-center layout, live analytics, a shared operations calendar, a production health center, safer bootstrap behavior, guided CRUD forms, related-record selectors and mobile-first layouts.
 
 Available areas include:
 
@@ -205,6 +205,14 @@ Available areas include:
 - Roles, profiles, settings, feature flags and audit log
 
 Each module supports database-backed list/search/create/update/delete operations. Related records use selectors instead of requiring users to type foreign-key UUIDs manually.
+
+Additional admin pages:
+
+- `/admin/analytics` — live operational metrics
+- `/admin/calendar` — leave, visitors, tasks and maintenance timeline
+- `/admin/health` — environment + required-table diagnostics
+
+If the health page reports missing tables, apply migrations 001 → 002 → 003 and run the check again.
 
 ## Render
 
@@ -261,6 +269,10 @@ https://YOUR-DOMAIN/api/health
 ```
 
 The endpoint returns the service name, Node version and timestamp.
+
+## CI quality gate
+
+GitHub Actions now runs both TypeScript validation and the production build on every push/PR. The workflow intentionally uses `npm install` because this repository does not rely on a committed lockfile.
 
 ## Testing
 
