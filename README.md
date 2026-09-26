@@ -16,7 +16,7 @@ Vercel must use:
 - Build Command: `npm run build`
 - Start Command: leave unset for a normal Next.js Vercel deployment
 
-Vercel confirms Node 24 is available for builds and functions, and its Node 20 deprecation notice recommends upgrading projects to `24.x`. citeturn0search1turn0search0
+Vercel confirms Node 24 is available for builds and functions, and its Node 20 deprecation notice recommends upgrading projects to `24.x`.
 
 ## What was rebuilt
 
