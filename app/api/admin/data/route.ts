@@ -30,8 +30,9 @@ async function authorize() {
 export async function GET(request: Request) {
   const auth = await authorize();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const table = new URL(request.url).searchParams.get("table") || "";
-  const limit = Math.min(Math.max(Number(new URL(request.url).searchParams.get("limit") || 100), 1), 250);
+  const params = new URL(request.url).searchParams;
+  const table = params.get("table") || "";
+  const limit = Math.min(Math.max(Number(params.get("limit") || 100), 1), 250);
   if (!TABLES.has(table)) return NextResponse.json({ error: "Unsupported table." }, { status: 400 });
   const db = serviceClient();
   const { data, error } = await db.from(table).select("*").limit(limit);
@@ -64,9 +65,12 @@ async function mutate(request: Request, action: "insert" | "update" | "delete") 
       return NextResponse.json({ ok: true, data });
     }
 
-    let query = db.from(table);
-    if (body.id) query = query.eq("id", body.id);
-    else for (const [key, value] of Object.entries(body.selector ?? {})) query = query.eq(key, value);
+    // The table name is intentionally validated against the allow-list above.
+    // Supabase cannot infer a typed table union from a runtime string, so keep
+    // the mutation builder dynamic while preserving the runtime query behavior.
+    const query: any = db.from(table);
+    if (body.id) query.eq("id", body.id);
+    else for (const [key, value] of Object.entries(body.selector ?? {})) query.eq(key, value);
 
     if (action === "update") {
       const { data, error } = await query.update(body.data ?? {}).select().single();
