@@ -68,3 +68,53 @@
 }
 
 .admin-setup-action{display:flex;align-items:center;gap:8px}.admin-setup-action small{color:#6d7d95;font-size:9px}.spin{animation:admin-spin .8s linear infinite}@keyframes admin-spin{to{transform:rotate(360deg)}}
+
+/* V4 INDUSTRY THEME — graphite / indigo / electric-lime */
+:root{
+  --admin-ink:#080a0f;
+  --admin-panel:#10131b;
+  --admin-panel-2:#171b27;
+  --admin-mint:#b8f36a;
+  --admin-blue:#8b7cff;
+  --admin-coral:#ff7b72;
+  --admin-gold:#ffd166;
+  --admin-violet:#c6b8ff;
+}
+.admin-app{
+  background:
+    radial-gradient(circle at 80% -10%,rgba(139,124,255,.20),transparent 34rem),
+    radial-gradient(circle at 15% 20%,rgba(184,243,106,.08),transparent 28rem),
+    #07090d;
+}
+.admin-sidebar{background:linear-gradient(180deg,#0d1017,#080a0f 80%);border-right-color:rgba(255,255,255,.09)}
+.admin-brand .brand-mark,.admin-mobile-head .brand-mark{
+  background:linear-gradient(135deg,var(--admin-mint),var(--admin-blue));
+  color:#080a0f;
+  box-shadow:0 10px 30px rgba(184,243,106,.12);
+}
+.admin-nav a.active{
+  color:#fff;
+  background:linear-gradient(100deg,rgba(184,243,106,.12),rgba(139,124,255,.12));
+  border-color:rgba(184,243,106,.22);
+}
+.admin-nav a.active svg,.admin-stat>svg,.admin-card-head>svg{color:var(--admin-mint)}
+.admin-card,.admin-stat{
+  background:linear-gradient(145deg,rgba(19,23,32,.96),rgba(10,12,18,.96));
+  border-color:rgba(255,255,255,.085);
+}
+.admin-card{box-shadow:0 24px 80px rgba(0,0,0,.28)}
+.admin-stat b{letter-spacing:-.04em}
+.admin-control-grid>a:hover{border-color:rgba(184,243,106,.25);background:rgba(184,243,106,.045)}
+.admin-control-grid>a>svg{color:var(--admin-blue)}
+.admin-search,.admin-field input,.admin-field select,.admin-field textarea,.admin-json-editor{
+  background:#080b11;
+  border-color:rgba(255,255,255,.10);
+}
+.admin-search:focus-within,.admin-field input:focus,.admin-field select:focus,.admin-field textarea:focus{
+  border-color:rgba(184,243,106,.45);
+  box-shadow:0 0 0 3px rgba(184,243,106,.07);
+}
+.button.primary{background:linear-gradient(135deg,var(--admin-mint),#8fe14d);color:#071006;border-color:transparent;box-shadow:0 10px 30px rgba(184,243,106,.10)}
+.button.primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.admin-success{color:#d8ffab;background:rgba(184,243,106,.07);border-color:rgba(184,243,106,.20)}
+.eyebrow{color:#8794aa}
