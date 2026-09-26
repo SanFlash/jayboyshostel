@@ -52,7 +52,7 @@ export default function AdminModule({ module }: { module: string }) {
 
   function edit(row: Row) {
     setSelected(row);
-    setJson(JSON.stringify(row, null, 2));
+    setJson(JSON.stringify(Object.fromEntries(Object.entries(row).filter(([key]) => !["id","created_at","updated_at"].includes(key))), null, 2));
     setMessage("");
   }
 
@@ -128,7 +128,7 @@ export default function AdminModule({ module }: { module: string }) {
       <section className="admin-editor-grid">
         <div className="panel">
           <div className="panel-head"><div><span>RECORDS</span><h2>{rows.length} loaded</h2></div><Database/></div>
-          {rows.length ? <div className="admin-record-list">{rows.map((row) => <article key={String(row.id)} className={selected?.id === row.id ? "admin-record active" : "admin-record"}>
+          {rows.length ? <div className="admin-record-list">{rows.map((row) => <article key={String(row.id ?? row.key ?? JSON.stringify(row))} className={selected?.id === row.id ? "admin-record active" : "admin-record"}>
             <div className="admin-record-main">
               <b>{String(row.application_code ?? row.member_code ?? row.room_number ?? row.invoice_number ?? row.payment_number ?? row.title ?? row.name ?? row.key ?? row.id ?? "Record")}</b>
               <small>{String(row.status ?? row.priority ?? row.email ?? row.role ?? row.message ?? "")}</small>
@@ -141,10 +141,10 @@ export default function AdminModule({ module }: { module: string }) {
         </div>
 
         <div className="panel admin-editor">
-          <div className="panel-head"><div><span>{selected?.id ? "EDIT RECORD" : "CREATE RECORD"}</span><h2>Data editor</h2></div><Save/></div>
-          <p className="editor-help">Advanced admin editor. Use valid database column names and JSON values. The API enforces authentication and role permissions.</p>
+          <div className="panel-head"><div><span>{selected ? "EDIT RECORD" : "CREATE RECORD"}</span><h2>Data editor</h2></div><Save/></div>
+          <p className="editor-help">Edit the fields below. Linked IDs must reference existing records; the server checks your permissions.</p>
           <div style={{display:"grid",gap:12}}>{Object.entries(JSON.parse(json) as Row).map(([key,value]) => <label key={key} style={{display:"grid",gap:5}}>{key.replaceAll("_"," ")}<input type={typeof value === "number" ? "number" : key.includes("date") ? "date" : "text"} value={String(value ?? "")} onChange={e => setJson(previous => JSON.stringify({...JSON.parse(previous),[key]:typeof value === "number" ? Number(e.target.value) : e.target.value},null,2))}/></label>)}</div>
-          <button className="button primary full" onClick={() => void save()} disabled={busy}><Save size={16}/> {busy ? "Saving…" : selected?.id ? "Update record" : "Create record"}</button>
+          <button className="button primary full" onClick={() => void save()} disabled={busy}><Save size={16}/> {busy ? "Saving…" : selected ? "Update record" : "Create record"}</button>
         </div>
       </section>
     </div>
