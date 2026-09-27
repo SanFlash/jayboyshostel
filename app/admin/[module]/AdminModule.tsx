@@ -135,12 +135,6 @@ export default function AdminModule({module}:{module:string}){
     setBusy(true);setError("");setMessage("");
     try{
       const data:Row={...form};
-      if(config.table==="members" && residentPhotoFile && selected?.id){
-        const upload=new FormData(); upload.append("file",residentPhotoFile); upload.append("member_id",String(selected.id));
-        const ur=await fetch("/api/admin/resident-photo",{method:"POST",body:upload,credentials:"same-origin"}); const up=await ur.json();
-        if(ur.status===401){window.location.href="/login";return} if(!ur.ok)throw new Error(up.error||"Resident photo upload failed.");
-        data.photo_path=up.path; data.photo_filename=up.filename; data.photo_mime_type=up.mimeType; data.photo_size_bytes=up.size;
-      }
       if(config.table==="applications" && uploadFile){
         const upload=new FormData(); upload.append("file",uploadFile); upload.append("application_id",String(selected?.id||"new"));
         const ur=await fetch("/api/admin/admission-proof",{method:"POST",body:upload,credentials:"same-origin"}); const up=await ur.json();
@@ -155,7 +149,22 @@ export default function AdminModule({module}:{module:string}){
         if(f.type==="datetime-local"&&data[f.key])data[f.key]=new Date(data[f.key]).toISOString();
       }
       const required=config.fields.find(f=>f.required&&(data[f.key]===undefined||data[f.key]===null||String(data[f.key]).trim()===""));if(required)throw new Error(required.label+" is required.");
-      const r=await fetch("/api/admin/data",{method:selected?"PATCH":"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify({table:config.table,id:selected?.id,selector:selected&&!selected.id?selector(selected):undefined,data})});const p=await r.json();if(r.status===401){window.location.href="/login";return}if(!r.ok)throw new Error(p.error||"Save failed.");setMessage(selected?"Record updated successfully.":"Record created successfully.");if(p.data)edit(p.data);await load();
+      const r=await fetch("/api/admin/data",{method:selected?"PATCH":"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify({table:config.table,id:selected?.id,selector:selected&&!selected.id?selector(selected):undefined,data})});
+      const p=await r.json();
+      if(r.status===401){window.location.href="/login";return}
+      if(!r.ok)throw new Error(p.error||"Save failed.");
+      let saved=p.data;
+      if(config.table==="members" && residentPhotoFile && saved?.id){
+        const upload=new FormData(); upload.append("file",residentPhotoFile); upload.append("member_id",String(saved.id));
+        const ur=await fetch("/api/admin/resident-photo",{method:"POST",body:upload,credentials:"same-origin"});
+        const up=await ur.json();
+        if(ur.status===401){window.location.href="/login";return}
+        if(!ur.ok)throw new Error(up.error||"Resident photo upload failed.");
+        saved={...saved,...up};
+      }
+      setMessage(selected?"Record updated successfully.":"Record created successfully.");
+      if(saved)edit(saved);
+      await load();
     }catch(e){setError(e instanceof Error?e.message:"Unable to save record.")}finally{setBusy(false)}
   }
   async function remove(row:Row){
