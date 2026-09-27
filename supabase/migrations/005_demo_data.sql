@@ -135,8 +135,17 @@ begin
     if ten is null then
       select r.id, r.floor_id into r, f1 from public.rooms r where r.status in('full','partially_occupied') order by random() limit 1;
       insert into public.beds(room_id,bed_label,status)
-      select r.id,'DEMO-'||right(m::text,4),'occupied' where not exists(select 1 from public.beds where room_id=r and bed_label='DEMO-'||right(m::text,4));
-      select id into inv from public.beds where room_id=r and bed_label='DEMO-'||right(m::text,4);
+      select room_rec.id,'DEMO-'||right(m::text,4),'occupied'
+      where not exists(
+        select 1
+        from public.beds existing_bed
+        where existing_bed.room_id=room_rec.id
+          and existing_bed.bed_label='DEMO-'||right(m::text,4)
+      );
+      select id into inv
+      from public.beds
+      where room_id=room_rec.id
+        and bed_label='DEMO-'||right(m::text,4);
       insert into public.tenancies(member_id,room_id,bed_id,check_in_date,expected_checkout_date,billing_start_date,rent_amount,security_deposit,status,notes)
       values(m,r,inv,current_date-((1+floor(random()*180))::int),current_date+180,current_date-((1+floor(random()*180))::int),(select monthly_rate from public.rooms where id=r),(select security_deposit from public.rooms where id=r),'active','Production demo tenancy — editable.');
     end if;
