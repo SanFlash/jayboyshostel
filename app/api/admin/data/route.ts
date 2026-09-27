@@ -68,6 +68,36 @@ export async function GET(request: Request) {
 
   const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+
+  if (table === "members" && data?.length) {
+    const ids = data.map((row: any) => row.id).filter(Boolean);
+    const { data: stays } = await db
+      .from("tenancies")
+      .select("member_id,room_id,bed_id,rooms(room_number,floors(name))")
+      .in("member_id", ids)
+      .in("status", ["active","notice_period","checkout_pending"]);
+
+    const allocation = new Map<string, any>();
+    for (const stay of stays || []) {
+      if (!allocation.has(String(stay.member_id))) {
+        const room = Array.isArray(stay.rooms) ? stay.rooms[0] : stay.rooms;
+        const floor = room && (Array.isArray(room.floors) ? room.floors[0] : room.floors);
+        allocation.set(String(stay.member_id), {
+          room_number: room?.room_number ?? null,
+          floor_name: floor?.name ?? null,
+          bed_id: stay.bed_id ?? null,
+        });
+      }
+    }
+
+    for (const row of data as any[]) {
+      const current = allocation.get(String(row.id));
+      row.current_room_number = current?.room_number ?? null;
+      row.current_floor_name = current?.floor_name ?? null;
+      row.current_bed_id = current?.bed_id ?? null;
+    }
+  }
+
   return NextResponse.json({ data: data ?? [] });
 }
 
