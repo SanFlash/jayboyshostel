@@ -364,3 +364,29 @@ in the Supabase SQL Editor.
 The seed is designed to be safe to re-run for the demo identifiers and does not create fake authentication accounts. Admin users remain controlled by the existing authentication/bootstrap flow.
 
 **Important:** Demo government-ID values are synthetic/masked examples. Do not place real Aadhaar numbers or real identity documents into the demo dataset.
+
+
+## Owner-provided room inventory
+
+Migration **007_real_room_configuration.sql** is the authoritative room configuration supplied by the hostel owner. It normalizes Jay Boys Hostel to **one building**, five floors (Floor 0 through Floor 4), **14 rooms and 31 beds**, and uses the supplied monthly room costs:
+
+| Floor | Room | Sharing | Monthly cost |
+|---|---|---:|---:|
+| 0 | 0-1 | 4 | ₹5,000 |
+| 1 | F1-0 | 2 | ₹7,500 |
+| 1 | F1-1 | 1 | ₹8,500 |
+| 1 | F1-2 | 2 | ₹7,500 |
+| 1 | F1-3 | 3 | ₹7,000 |
+| 2 | F2-4 | 2 | ₹7,500 |
+| 2 | F2-5 | 1 | ₹8,500 |
+| 2 | F2-6 | 2 | ₹7,500 |
+| 2 | F2-7 | 3 | ₹7,000 |
+| 3 | F3-8 | 2 | ₹7,500 |
+| 3 | F3-9 | 1 | ₹8,500 |
+| 3 | F3-10 | 2 | ₹7,500 |
+| 3 | F3-11 | 3 | ₹7,000 |
+| 4 | F4-12 | 3 | ₹7,000 |
+
+No daily rate or security deposit is invented because those values were not present in the supplied sheet. Apply migrations in order through **007**. Migration 007 removes synthetic demo residents/operational records, but it stops rather than deleting data if real active room allocations, room-linked complaints, or room-linked maintenance records already exist.
+
+The primary admin navigation is intentionally reduced to: **Overview, Floor Occupancy, Residents, Admissions, Billing, Complaints, Website, Settings**. Lower-level tables remain available to the backend for future expansion but are no longer presented as separate primary modules.
