@@ -110,8 +110,7 @@ begin
     (main_building,'Floor 1',1),
     (main_building,'Floor 2',2),
     (main_building,'Floor 3',3),
-    (main_building,'Floor 4',4)
-  returning id into floor0;
+    (main_building,'Floor 4',4);
 
   select id into floor0 from public.floors where building_id=main_building and sort_order=0;
   select id into floor1 from public.floors where building_id=main_building and sort_order=1;
