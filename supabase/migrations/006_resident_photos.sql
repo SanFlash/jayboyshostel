@@ -1,6 +1,7 @@
 -- Resident photos + floor occupancy reporting
 alter table public.members
   add column if not exists photo_path text,
+  add column if not exists photo_url text,
   add column if not exists photo_filename text,
   add column if not exists photo_mime_type text,
   add column if not exists photo_size_bytes bigint,
