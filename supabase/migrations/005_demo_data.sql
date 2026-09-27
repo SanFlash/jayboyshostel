@@ -65,9 +65,16 @@ begin
 
   for r in select id from public.rooms where floor_id in(f1,f2,f3,f4,f5) loop
     insert into public.beds(room_id,bed_label,status)
-    select r.id,'B'||x,case when x=1 and r.id in(select id from public.rooms where status='full') then 'occupied'::public.bed_status else 'available'::public.bed_status end
-    from generate_series(1,4) x
-    where x <= (select capacity from public.rooms where id=r.id)
+    select
+      r.id,
+      'B' || gs.x,
+      case
+        when gs.x = 1 and r.id in(select id from public.rooms where status='full')
+          then 'occupied'::public.bed_status
+        else 'available'::public.bed_status
+      end
+    from generate_series(1,4) as gs(x)
+    where gs.x <= (select capacity from public.rooms where id=r.id)
     on conflict(room_id,bed_label) do nothing;
   end loop;
 
