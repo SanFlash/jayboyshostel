@@ -1,10 +1,21 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-// Refresh resident Supabase sessions. The admin console uses its own signed
-// HTTP-only session and is intentionally excluded so Supabase middleware cannot
-// replace or interfere with the admin response/cookies.
+// The admin console has its own signed HTTP-only session. Return immediately
+// for every admin request so Supabase resident-session refresh can never touch
+// an admin navigation or response.
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  if (
+    pathname === "/admin" ||
+    pathname.startsWith("/admin/") ||
+    pathname === "/api/admin" ||
+    pathname.startsWith("/api/admin/") ||
+    pathname === "/api/auth/signout"
+  ) {
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({ request });
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -16,7 +27,7 @@ export async function middleware(request: NextRequest) {
         return request.cookies.getAll();
       },
       setAll(cookies) {
-        cookies.forEach(({ name, value }) => request.cookies.set(name, value));
+        cookies.forEach(({ name, value, options }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
         cookies.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
       },
