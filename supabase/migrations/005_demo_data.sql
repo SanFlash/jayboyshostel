@@ -160,7 +160,7 @@ begin
   on conflict do nothing;
 
   insert into public.invoices(invoice_number,member_id,tenancy_id,period_start,period_end,issue_date,due_date,subtotal,discount,late_fee,total,paid_amount,status)
-  select 'INV-DEMO-'||lpad(row_number() over(order by m.member_code)::text,3,'0'),m.id,t.id,date_trunc('month',current_date)::date,(date_trunc('month',current_date)+interval '1 month-1 day')::date,current_date-5,current_date+5,6500,case when row_number() over(order by m.member_code)%5=0 then 500 else 0 end,0,case when row_number() over(order by m.member_code)%5=0 then 6000 else 6500 end,case when row_number() over(order by m.member_code)%3=0 then 6500 else 0 end,case when row_number() over(order by m.member_code)%3=0 then 'paid'::public.invoice_status else 'issued'::public.invoice_status end
+  select 'INV-DEMO-'||lpad(row_number() over(order by m.member_code)::text,3,'0'),m.id,t.id,date_trunc('month',current_date)::date,(date_trunc('month',current_date) + interval '1 month' - interval '1 day')::date,current_date-5,current_date+5,6500,case when row_number() over(order by m.member_code)%5=0 then 500 else 0 end,0,case when row_number() over(order by m.member_code)%5=0 then 6000 else 6500 end,case when row_number() over(order by m.member_code)%3=0 then 6500 else 0 end,case when row_number() over(order by m.member_code)%3=0 then 'paid'::public.invoice_status else 'issued'::public.invoice_status end
   from public.members m join public.tenancies t on t.member_id=m.id
   where m.member_code like 'JBY-DEMO-%'
   on conflict(invoice_number) do nothing;
