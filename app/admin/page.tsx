@@ -42,8 +42,8 @@ export default async function AdminPage() {
           <Link href="/admin/floor-map" prefetch={false}><Building2 size={15}/><span>Floor Occupancy</span></Link>
           <Link href="/admin/members" prefetch={false}><Users size={15}/><span>Residents</span></Link>
           <Link href="/admin/applications" prefetch={false}><ClipboardList size={15}/><span>Admissions</span></Link>
-          <Link href="/admin/billing" prefetch={false}><WalletCards size={15}/><span>Billing</span></Link>
-          <Link href="/admin/complaints" prefetch={false}><AlertTriangle size={15}/><span>Complaints</span></Link>
+          <Link href="/admin/finance" prefetch={false}><WalletCards size={15}/><span>Finance</span></Link>
+          <Link href="/admin/operations" prefetch={false}><Building2 size={15}/><span>Operations</span></Link><Link href="/admin/complaints" prefetch={false}><AlertTriangle size={15}/><span>Complaints</span></Link>
         </div>
         <div className="admin-nav-group"><span>CONTROL</span>
           <Link href="/admin/website" prefetch={false}><Megaphone size={15}/><span>Website</span></Link>
@@ -70,7 +70,7 @@ export default async function AdminPage() {
               <Link href="/admin/floor-map" prefetch={false}><Building2/><span><b>Floor Occupancy</b><small>Floor 0–4, every room, bed, resident and allocation.</small></span></Link>
               <Link href="/admin/members" prefetch={false}><Users/><span><b>Residents</b><small>Profile, photo, contact and current room allocation.</small></span></Link>
               <Link href="/admin/applications" prefetch={false}><ClipboardList/><span><b>Admissions</b><small>Review applications and verify resident records.</small></span></Link>
-              <Link href="/admin/billing" prefetch={false}><WalletCards/><span><b>Billing</b><small>Manage invoices and resident charges.</small></span></Link>
+              <Link href="/admin/finance" prefetch={false}><WalletCards/><span><b>Finance</b><small>Invoices, payments and hostel expenses.</small></span></Link>
               <Link href="/admin/complaints" prefetch={false}><AlertTriangle/><span><b>Complaints</b><small>Track issues through resolution.</small></span></Link>
               <Link href="/admin/settings" prefetch={false}><Settings2/><span><b>Settings</b><small>Maintain hostel configuration and controls.</small></span></Link>
             </div>
