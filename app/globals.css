@@ -158,3 +158,7 @@ body{background:radial-gradient(circle at 15% -5%,#1b1741 0,transparent 34rem),r
 @media(max-width:900px){.occupancy-hero{grid-template-columns:1fr}.occupancy-3d-building{height:220px;transform:perspective(700px) rotateY(-7deg) rotateX(3deg)}}
 @media(max-width:600px){.occupancy-hero{padding:20px}.occupancy-kpis div{flex:1;min-width:75px}.occupancy-kpis b{font-size:19px}.room-grid{grid-template-columns:1fr}.floor-toolbar{padding:14px}.floor-summary{justify-content:flex-start}.modal-card{padding:18px}.hero{padding-top:35px}.hero-stage{min-height:420px}.building{height:360px}.float-card{transform:scale(.9)}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+.hero-building-art{position:absolute;width:min(620px,105%);height:auto;right:-4%;top:2%;opacity:.72;filter:drop-shadow(0 30px 50px #0008);transform:perspective(900px) rotateY(-8deg);animation:jbFloat 8s ease-in-out infinite;pointer-events:none;mix-blend-mode:screen}.hero-stage .building{z-index:1}.hero-stage .float-card{z-index:3}
+@media(max-width:900px){.hero-building-art{width:115%;right:-8%;top:4%;opacity:.48}}
+@media(prefers-reduced-motion:reduce){.hero-building-art{animation:none}}
