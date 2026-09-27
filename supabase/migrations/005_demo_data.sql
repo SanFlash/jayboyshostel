@@ -9,6 +9,8 @@ declare
   f1 uuid; f2 uuid; f3 uuid; f4 uuid; f5 uuid;
   r uuid; m uuid; app uuid; ten uuid; inv uuid;
   i int;
+  room_rec record;
+  bed_no int;
 begin
   select id into h from public.hostels order by created_at limit 1;
   if h is null then
@@ -63,8 +65,8 @@ begin
     on conflict(floor_id,room_number) do nothing;
   end loop;
 
-  -- Seed beds with a nested PL/pgSQL loop so room variables are never
-  -- referenced from an out-of-scope SQL FROM/subquery.
+  -- Seed beds with a nested PL/pgSQL loop. Declare loop variables
+  -- explicitly because FOR ... IN SELECT requires a record/scalar target.
   for room_rec in
     select id, capacity, status
     from public.rooms
