@@ -55,13 +55,13 @@ export default async function AdminPage(){
 
  return <main className="admin-app">
   <aside className="admin-sidebar">
-   <Link href="/admin" className="admin-brand"><span className="brand-mark"><Building2 size={18}/></span><span><b>JAY BOYS</b><small>OPERATIONS OS</small></span></Link>
+   <Link href="/admin" prefetch={false} className="admin-brand"><span className="brand-mark"><Building2 size={18}/></span><span><b>JAY BOYS</b><small>OPERATIONS OS</small></span></Link>
    <div className="admin-nav">
-    <div className="admin-nav-group"><span>COMMAND</span><Link className="active" href="/admin"><Activity size={15}/><span>Overview</span></Link><Link href="/admin/website"><Megaphone size={15}/><span>Website</span></Link><Link href="/admin/members"><Users size={15}/><span>Residents</span></Link><Link href="/admin/applications"><ClipboardList size={15}/><span>Admissions</span></Link></div>
-    <div className="admin-nav-group"><span>OPERATIONS</span>{[["Stay & Allocations","/admin/tenancies",Building2],["Rooms & Beds","/admin/rooms",BedDouble],["Visitors","/admin/visitors",UserCheck],["Maintenance","/admin/maintenance",Wrench],["Billing","/admin/billing",WalletCards],["Payments","/admin/payments",IndianRupee],["Documents","/admin/documents",FileCheck2],["Complaints","/admin/complaints",AlertTriangle],["Communication","/admin/announcements",MessageSquareWarning],["Attendance","/admin/attendance",CalendarDays],["Inventory","/admin/inventory",Package],["Staff Tasks","/admin/staff_tasks",ClipboardList]].map(([label,href,Icon])=><Link href={String(href)} key={String(label)}><Icon size={15}/><span>{String(label)}</span></Link>)}</div>
-    <div className="admin-nav-group"><span>CONFIGURATION</span><Link href="/admin/hostels"><Building2 size={15}/><span>Hostel Setup</span></Link><Link href="/admin/roles"><ShieldCheck size={15}/><span>Security & Roles</span></Link><Link href="/admin/settings"><Settings2 size={15}/><span>System Settings</span></Link><Link href="/admin/audit"><Activity size={15}/><span>Audit Log</span></Link></div>
+    <div className="admin-nav-group"><span>COMMAND</span><Link className="active" href="/admin" prefetch={false}><Activity size={15}/><span>Overview</span></Link><Link href="/admin/website" prefetch={false}><Megaphone size={15}/><span>Website</span></Link><Link href="/admin/members" prefetch={false}><Users size={15}/><span>Residents</span></Link><Link href="/admin/applications" prefetch={false}><ClipboardList size={15}/><span>Admissions</span></Link></div>
+    <div className="admin-nav-group"><span>OPERATIONS</span>{[["Stay & Allocations","/admin/tenancies",Building2],["Rooms & Beds","/admin/rooms",BedDouble],["Visitors","/admin/visitors",UserCheck],["Maintenance","/admin/maintenance",Wrench],["Billing","/admin/billing",WalletCards],["Payments","/admin/payments",IndianRupee],["Documents","/admin/documents",FileCheck2],["Complaints","/admin/complaints",AlertTriangle],["Communication","/admin/announcements",MessageSquareWarning],["Attendance","/admin/attendance",CalendarDays],["Inventory","/admin/inventory",Package],["Staff Tasks","/admin/staff_tasks",ClipboardList]].map(([label,href,Icon])=><Link href={String(href)} prefetch={false} key={String(label)}><Icon size={15}/><span>{String(label)}</span></Link>)}</div>
+    <div className="admin-nav-group"><span>CONFIGURATION</span><Link href="/admin/hostels" prefetch={false}><Building2 size={15}/><span>Hostel Setup</span></Link><Link href="/admin/roles" prefetch={false}><ShieldCheck size={15}/><span>Security & Roles</span></Link><Link href="/admin/settings" prefetch={false}><Settings2 size={15}/><span>System Settings</span></Link><Link href="/admin/audit" prefetch={false}><Activity size={15}/><span>Audit Log</span></Link></div>
    </div>
-   <div className="admin-sidebar-foot"><Link href="/api/auth/signout"><LogOut size={14}/> Sign out</Link><Link href="/">View website</Link></div>
+   <div className="admin-sidebar-foot"><Link href="/api/auth/signout" prefetch={false}><LogOut size={14}/> Sign out</Link><Link href="/" prefetch={false}>View website</Link></div>
   </aside>
   <section className="admin-main"><header className="admin-mobile-head"><Link href="/admin" className="brand"><span className="brand-mark"><Building2 size={17}/></span><span><b>JAY BOYS</b><small>ADMIN</small></span></Link><Link href="/api/auth/signout" className="icon-button"><LogOut size={15}/></Link></header>
    <div className="admin-content">
@@ -71,14 +71,14 @@ export default async function AdminPage(){
       <div className="admin-card" style={{gridColumn:"1/-1"}}>
         <div className="admin-card-head"><div><span>PLATFORM TOOLS</span><h2>Operate · inspect · verify</h2></div><ShieldCheck/></div>
         <div className="admin-control-grid">
-          <Link href="/admin/analytics"><Activity/><span><b>Analytics</b><small>Live operational counts and workflow overview.</small></span></Link>
-          <Link href="/admin/calendar"><CalendarDays/><span><b>Calendar</b><small>Shared operational timeline.</small></span></Link>
-          <Link href="/admin/health"><ShieldCheck/><span><b>System Health</b><small>Check environment and required database tables.</small></span></Link>
-          <Link href="/admin/settings"><Settings2/><span><b>System Settings</b><small>Feature flags and platform configuration.</small></span></Link>
+          <Link href="/admin/analytics" prefetch={false}><Activity/><span><b>Analytics</b><small>Live operational counts and workflow overview.</small></span></Link>
+          <Link href="/admin/calendar" prefetch={false}><CalendarDays/><span><b>Calendar</b><small>Shared operational timeline.</small></span></Link>
+          <Link href="/admin/health" prefetch={false}><ShieldCheck/><span><b>System Health</b><small>Check environment and required database tables.</small></span></Link>
+          <Link href="/admin/settings" prefetch={false}><Settings2/><span><b>System Settings</b><small>Feature flags and platform configuration.</small></span></Link>
         </div>
       </div>
 
-      <div className="admin-card"><div className="admin-card-head"><div><span>ADMISSIONS QUEUE</span><h2>Requiring attention</h2></div><ClipboardList/></div>{pending.data?.length?<div className="admin-table">{pending.data.map(a=><div key={a.id}><span><b>{a.application_code}</b><small>{a.status.replaceAll("_"," ")}</small></span><time>{new Date(a.created_at).toLocaleDateString("en-IN")}</time><Link href="/admin/applications">Open</Link></div>)}</div>:<div className="empty-state">No pending applications. New admissions will appear here.</div>}</div>
+      <div className="admin-card"><div className="admin-card-head"><div><span>ADMISSIONS QUEUE</span><h2>Requiring attention</h2></div><ClipboardList/></div>{pending.data?.length?<div className="admin-table">{pending.data.map(a=><div key={a.id}><span><b>{a.application_code}</b><small>{a.status.replaceAll("_"," ")}</small></span><time>{new Date(a.created_at).toLocaleDateString("en-IN")}</time><Link href="/admin/applications" prefetch={false}>Open</Link></div>)}</div>:<div className="empty-state">No pending applications. New admissions will appear here.</div>}</div>
       <div className="admin-card"><div className="admin-card-head"><div><span>OPERATIONS MAP</span><h2>Run the hostel from here</h2></div><Settings2/></div><div className="admin-control-grid">{links.map(([title,href,Icon,desc])=><Link href={href} key={title}><Icon/><span><b>{title}</b><small>{desc}</small></span></Link>)}</div></div>
     </section>
    </div>
