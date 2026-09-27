@@ -63,19 +63,26 @@ begin
     on conflict(floor_id,room_number) do nothing;
   end loop;
 
-  for r in select id from public.rooms where floor_id in(f1,f2,f3,f4,f5) loop
-    insert into public.beds(room_id,bed_label,status)
-    select
-      r.id,
-      'B' || gs.x,
-      case
-        when gs.x = 1 and r.id in(select id from public.rooms where status='full')
-          then 'occupied'::public.bed_status
-        else 'available'::public.bed_status
-      end
-    from generate_series(1,4) as gs(x)
-    where gs.x <= (select capacity from public.rooms where id=r.id)
-    on conflict(room_id,bed_label) do nothing;
+  -- Seed beds with a nested PL/pgSQL loop so room variables are never
+  -- referenced from an out-of-scope SQL FROM/subquery.
+  for room_rec in
+    select id, capacity, status
+    from public.rooms
+    where floor_id in(f1,f2,f3,f4,f5)
+  loop
+    for bed_no in 1..room_rec.capacity loop
+      insert into public.beds(room_id,bed_label,status)
+      values(
+        room_rec.id,
+        'B' || bed_no,
+        case
+          when bed_no = 1 and room_rec.status = 'full'::public.room_status
+            then 'occupied'::public.bed_status
+          else 'available'::public.bed_status
+        end
+      )
+      on conflict(room_id,bed_label) do nothing;
+    end loop;
   end loop;
 
   insert into public.members(member_code,full_name,father_name,mother_name,dob,gender,phone,alternate_phone,email,id_type,id_number_masked,address,city,state,postal_code,institution,course,academic_year,enrollment_number,status)
