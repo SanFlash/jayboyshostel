@@ -6,7 +6,7 @@ create or replace function public.validate_tenancy_allocation()
 returns trigger
 language plpgsql
 security definer
-set search_path=public
+set search_path=''
 as $$
 declare
   actual_room uuid;
@@ -78,7 +78,7 @@ begin
     where id=new_bed;
   end if;
 
-  foreach room_to_sync in array array_remove(array[old_room,new_room],null) loop
+  foreach room_to_sync in array pg_catalog.array_remove(array[old_room,new_room],null) loop
     select capacity into room_capacity from public.rooms where id=room_to_sync;
     if room_capacity is null then continue; end if;
 
