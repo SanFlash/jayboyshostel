@@ -61,7 +61,7 @@ begin
   where r.floor_id in (select f.id from public.floors f join public.buildings b on b.id=f.building_id where b.hostel_id=h);
 
   if protected_count > 0 then
-    raise exception 'Migration 007 stopped: % active/non-demo tenancy record(s) exist. Review real allocations before rebuilding the room structure.', protected_count;
+    raise exception 'Migration 007 stopped: % real tenancy record(s) exist. Review real allocations before rebuilding the room structure.', protected_count;
   end if;
 
   select count(*) into protected_count
