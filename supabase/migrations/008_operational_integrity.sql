@@ -45,39 +45,46 @@ declare
   new_room uuid;
   old_bed uuid;
   new_bed uuid;
+  old_member uuid;
+  new_member uuid;
   occupied_count integer;
   room_capacity integer;
-  member_id_value uuid;
-  next_member_status public.tenancy_status;
+  room_to_sync uuid;
 begin
-  old_room := case when tg_op='INSERT' then null else old.room_id end;
-  new_room := case when tg_op='DELETE' then null else new.room_id end;
-  old_bed := case when tg_op='INSERT' then null else old.bed_id end;
-  new_bed := case when tg_op='DELETE' then null else new.bed_id end;
-
-  if old_bed is not null and old_bed <> new_bed then
+  if tg_op='INSERT' then
+    new_room:=new.room_id;
+    new_bed:=new.bed_id;
+    new_member:=new.member_id;
+    update public.beds set status=case when new.status in ('active','notice_period','checkout_pending') then 'occupied'::public.bed_status else 'available'::public.bed_status end where id=new_bed;
+  elsif tg_op='DELETE' then
+    old_room:=old.room_id;
+    old_bed:=old.bed_id;
+    old_member:=old.member_id;
     update public.beds set status='available'::public.bed_status where id=old_bed;
-  end if;
+  else
+    old_room:=old.room_id;
+    new_room:=new.room_id;
+    old_bed:=old.bed_id;
+    new_bed:=new.bed_id;
+    old_member:=old.member_id;
+    new_member:=new.member_id;
 
-  if new_bed is not null then
-    if tg_op='DELETE' or old.status is distinct from new.status then
-      update public.beds
-      set status=case
-        when tg_op <> 'DELETE' and new.status in ('active','notice_period','checkout_pending')
-          then 'occupied'::public.bed_status
-        else 'available'::public.bed_status
-      end
-      where id=new_bed;
+    if old_bed is distinct from new_bed then
+      update public.beds set status='available'::public.bed_status where id=old_bed;
     end if;
+
+    update public.beds
+    set status=case when new.status in ('active','notice_period','checkout_pending') then 'occupied'::public.bed_status else 'available'::public.bed_status end
+    where id=new_bed;
   end if;
 
-  foreach new_room in array array_remove(array[old_room,new_room],null) loop
-    select capacity into room_capacity from public.rooms where id=new_room;
+  foreach room_to_sync in array array_remove(array[old_room,new_room],null) loop
+    select capacity into room_capacity from public.rooms where id=room_to_sync;
     if room_capacity is null then continue; end if;
 
     select count(*) into occupied_count
     from public.beds
-    where room_id=new_room and status='occupied';
+    where room_id=room_to_sync and status='occupied';
 
     update public.rooms
     set status=case
@@ -86,21 +93,26 @@ begin
       when occupied_count>=room_capacity then 'full'::public.room_status
       else 'partially_occupied'::public.room_status
     end
-    where id=new_room;
+    where id=room_to_sync;
   end loop;
 
-  member_id_value := case when tg_op='DELETE' then old.member_id else new.member_id end;
-  if member_id_value is not null then
-    if tg_op='DELETE' or (tg_op='UPDATE' and old.status in ('active','notice_period','checkout_pending') and new.status not in ('active','notice_period','checkout_pending')) then
-      if not exists(
-        select 1 from public.tenancies
-        where member_id=member_id_value and status in ('active','notice_period','checkout_pending')
-          and (tg_op <> 'UPDATE' or id<>new.id)
-      ) then
-        update public.members set status='checked_out'::public.tenancy_status where id=member_id_value and status<>'archived';
+  if tg_op='INSERT' then
+    update public.members
+    set status=case when new.status='notice_period' then 'notice_period'::public.tenancy_status else 'active'::public.tenancy_status end
+    where id=new_member and new.status in ('active','notice_period','checkout_pending');
+  elsif tg_op='UPDATE' then
+    if new.status in ('active','notice_period','checkout_pending') then
+      update public.members
+      set status=case when new.status='notice_period' then 'notice_period'::public.tenancy_status else 'active'::public.tenancy_status end
+      where id=new_member;
+    elsif old.status in ('active','notice_period','checkout_pending') then
+      if not exists(select 1 from public.tenancies where member_id=old_member and id<>new.id and status in ('active','notice_period','checkout_pending')) then
+        update public.members set status='checked_out'::public.tenancy_status where id=old_member and status<>'archived';
       end if;
-    elsif tg_op='INSERT' or (tg_op='UPDATE' and new.status in ('active','notice_period','checkout_pending')) then
-      update public.members set status=case when new.status='notice_period' then 'notice_period'::public.tenancy_status else 'active'::public.tenancy_status end where id=member_id_value;
+    end if;
+  else
+    if not exists(select 1 from public.tenancies where member_id=old_member and status in ('active','notice_period','checkout_pending')) then
+      update public.members set status='checked_out'::public.tenancy_status where id=old_member and status<>'archived';
     end if;
   end if;
 
