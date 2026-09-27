@@ -41,8 +41,10 @@ export default function LoginPage() {
           throw new Error(payload?.error || "Invalid administrator credentials.");
         }
 
-        router.replace("/admin");
-        router.refresh();
+        // Force a fresh document request after the Set-Cookie response.
+        // This avoids a stale App Router prefetch created before the admin
+        // session cookie was written.
+        window.location.assign("/admin");
         return;
       }
 
