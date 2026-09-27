@@ -320,3 +320,47 @@ Do not interpret an empty dashboard as an error. Zero records means the connecte
 https://github.com/SanFlash/jayboyshostel
 
 Default branch: `main`
+
+## Production Demo Dataset
+
+The project includes an editable production-style demo dataset in:
+
+`supabase/migrations/005_demo_data.sql`
+
+It seeds a realistic Jay Boys Hostel workspace with:
+
+- 3 buildings / wings
+- 5 floors
+- 30 rooms across multiple room types
+- Beds with mixed occupancy
+- 18 resident/student records
+- Parent/guardian records
+- Admission applications in multiple workflow states
+- Government-ID verification examples
+- Active tenancies
+- Pricing plans
+- Monthly invoices and sample payments
+- Announcements
+- Complaints
+- Visitor logs
+- Maintenance requests
+- Inventory and reorder levels
+- Expenses
+- Attendance
+- Staff tasks
+- Leave requests
+- Public site demo content
+
+All demo records use recognizable `JBY-DEMO-`, `APP-DEMO-`, `INV-DEMO-` and `PAY-DEMO-` identifiers where applicable, so administrators can identify, edit or delete them from the Admin Console.
+
+### Load the demo data
+
+After applying migrations `001` through `004`, run:
+
+`005_demo_data.sql`
+
+in the Supabase SQL Editor.
+
+The seed is designed to be safe to re-run for the demo identifiers and does not create fake authentication accounts. Admin users remain controlled by the existing authentication/bootstrap flow.
+
+**Important:** Demo government-ID values are synthetic/masked examples. Do not place real Aadhaar numbers or real identity documents into the demo dataset.
