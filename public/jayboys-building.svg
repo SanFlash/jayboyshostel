@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" role="img" aria-labelledby="title desc">
+<title id="title">Jay Boys Hostel 3D illustration</title><desc id="desc">Abstract three-dimensional illustration of a modern hostel building.</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#10182c"/><stop offset=".55" stop-color="#0b1020"/><stop offset="1" stop-color="#070b13"/></linearGradient>
+ <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#5ee7d2" stop-opacity=".8"/><stop offset="1" stop-color="#8f7cff" stop-opacity=".7"/></linearGradient>
+ <linearGradient id="side" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#263756"/><stop offset="1" stop-color="#0c1424"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="16"/></filter>
+ <filter id="shadow"><feDropShadow dx="0" dy="25" stdDeviation="25" flood-color="#000" flood-opacity=".65"/></filter>
+</defs>
+<rect width="900" height="700" rx="48" fill="url(#bg)"/>
+<circle cx="650" cy="170" r="130" fill="#8f7cff" opacity=".11" filter="url(#glow)"/>
+<circle cx="270" cy="510" r="150" fill="#5ee7d2" opacity=".08" filter="url(#glow)"/>
+<g filter="url(#shadow)" transform="translate(145 70)">
+ <path d="M120 90 610 35v435L120 530z" fill="url(#side)" stroke="#fff" stroke-opacity=".12"/>
+ <path d="M120 90 360 145v435L120 530z" fill="#17243a" stroke="#fff" stroke-opacity=".08"/>
+ <path d="M120 90 360 145 610 35 370 0z" fill="#2a3b5c" stroke="#fff" stroke-opacity=".13"/>
+ <g fill="url(#glass)" stroke="#fff" stroke-opacity=".12">
+  <rect x="155" y="105" width="38" height="43" rx="6" opacity="0.95"/><rect x="223" y="105" width="38" height="43" rx="6" opacity="0.68"/><rect x="291" y="105" width="38" height="43" rx="6" opacity="0.95"/><rect x="359" y="105" width="38" height="43" rx="6" opacity="0.68"/><rect x="427" y="105" width="38" height="43" rx="6" opacity="0.95"/><rect x="495" y="105" width="38" height="43" rx="6" opacity="0.68"/><rect x="155" y="177" width="38" height="43" rx="6" opacity="0.68"/><rect x="223" y="177" width="38" height="43" rx="6" opacity="0.68"/><rect x="291" y="177" width="38" height="43" rx="6" opacity="0.68"/><rect x="359" y="177" width="38" height="43" rx="6" opacity="0.68"/><rect x="427" y="177" width="38" height="43" rx="6" opacity="0.68"/><rect x="495" y="177" width="38" height="43" rx="6" opacity="0.68"/><rect x="155" y="249" width="38" height="43" rx="6" opacity="0.68"/><rect x="223" y="249" width="38" height="43" rx="6" opacity="0.68"/><rect x="291" y="249" width="38" height="43" rx="6" opacity="0.68"/><rect x="359" y="249" width="38" height="43" rx="6" opacity="0.68"/><rect x="427" y="249" width="38" height="43" rx="6" opacity="0.68"/><rect x="495" y="249" width="38" height="43" rx="6" opacity="0.68"/><rect x="155" y="321" width="38" height="43" rx="6" opacity="0.68"/><rect x="223" y="321" width="38" height="43" rx="6" opacity="0.68"/><rect x="291" y="321" width="38" height="43" rx="6" opacity="0.68"/><rect x="359" y="321" width="38" height="43" rx="6" opacity="0.68"/><rect x="427" y="321" width="38" height="43" rx="6" opacity="0.68"/><rect x="495" y="321" width="38" height="43" rx="6" opacity="0.68"/><rect x="155" y="393" width="38" height="43" rx="6" opacity="0.68"/><rect x="223" y="393" width="38" height="43" rx="6" opacity="0.68"/><rect x="291" y="393" width="38" height="43" rx="6" opacity="0.68"/><rect x="359" y="393" width="38" height="43" rx="6" opacity="0.68"/><rect x="427" y="393" width="38" height="43" rx="6" opacity="0.68"/><rect x="495" y="393" width="38" height="43" rx="6" opacity="0.68"/>
+ </g>
+ <g fill="#5ee7d2" opacity=".16"><rect x="132" y="130" width="45" height="42" rx="5"/><rect x="132" y="202" width="45" height="42" rx="5"/><rect x="132" y="274" width="45" height="42" rx="5"/><rect x="132" y="346" width="45" height="42" rx="5"/><rect x="132" y="418" width="45" height="42" rx="5"/></g>
+ <path d="M290 580h95V475h-95z" fill="#0a101d" stroke="#5ee7d2" stroke-opacity=".35"/>
+ <path d="M245 580h280" stroke="#5ee7d2" stroke-opacity=".18" stroke-width="3"/>
+ <text x="165" y="64" fill="#fff" font-family="Arial,sans-serif" font-size="22" font-weight="800" letter-spacing="5">JAY BOYS</text>
+ <text x="165" y="88" fill="#91a0b7" font-family="Arial,sans-serif" font-size="9" letter-spacing="3">VINOBA NAGAR · INDORE</text>
+</g>
+<g fill="#fff">
+ <circle cx="95" cy="120" r="4" opacity=".55"/><circle cx="790" cy="520" r="5" opacity=".35"/><circle cx="745" cy="105" r="3" opacity=".5"/>
+</g>
+</svg>
