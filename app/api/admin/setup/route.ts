@@ -37,43 +37,54 @@ export async function POST() {
       created.push("building");
     }
 
-    let floor = (await db.from("floors").select("*").eq("building_id", building.id).order("sort_order").limit(1).maybeSingle()).data;
-    if (!floor) {
-      const result = await db.from("floors").insert({ building_id: building.id, name: "Ground Floor", sort_order: 1 }).select().single();
-      if (result.error) throw result.error;
-      floor = result.data;
-      created.push("floor");
+    const floorSeeds = [
+      { name: "Floor 0", sort_order: 0 },
+      { name: "Floor 1", sort_order: 1 },
+      { name: "Floor 2", sort_order: 2 },
+      { name: "Floor 3", sort_order: 3 },
+      { name: "Floor 4", sort_order: 4 },
+    ];
+
+    const floorIds: Record<string,string> = {};
+    for (const seed of floorSeeds) {
+      let floor = (await db.from("floors").select("*").eq("building_id", building.id).eq("name", seed.name).maybeSingle()).data;
+      if (!floor) {
+        const result = await db.from("floors").insert({ building_id: building.id, name: seed.name, sort_order: seed.sort_order }).select().single();
+        if (result.error) throw result.error;
+        floor = result.data;
+        created.push(seed.name);
+      }
+      floorIds[seed.name] = floor.id;
     }
 
     const roomSeeds = [
-      { room_number: "101", room_type: "4 Sharing", capacity: 4, monthly_rate: 6500 },
-      { room_number: "102", room_type: "4 Sharing", capacity: 4, monthly_rate: 6500 },
-      { room_number: "103", room_type: "3 Sharing", capacity: 3, monthly_rate: 7000 },
-      { room_number: "104", room_type: "2 Sharing", capacity: 2, monthly_rate: 8000 },
-    ];
+      ["Floor 0","0-1","4 Sharing",4,5000],
+      ["Floor 1","F1-0","2 Sharing",2,7500],["Floor 1","F1-1","1 Sharing",1,8500],["Floor 1","F1-2","2 Sharing",2,7500],["Floor 1","F1-3","3 Sharing",3,7000],
+      ["Floor 2","F2-4","2 Sharing",2,7500],["Floor 2","F2-5","1 Sharing",1,8500],["Floor 2","F2-6","2 Sharing",2,7500],["Floor 2","F2-7","3 Sharing",3,7000],
+      ["Floor 3","F3-8","2 Sharing",2,7500],["Floor 3","F3-9","1 Sharing",1,8500],["Floor 3","F3-10","2 Sharing",2,7500],["Floor 3","F3-11","3 Sharing",3,7000],
+      ["Floor 4","F4-12","3 Sharing",3,7000],
+    ] as const;
 
-    for (const seed of roomSeeds) {
-      let room = (await db.from("rooms").select("*").eq("floor_id", floor.id).eq("room_number", seed.room_number).maybeSingle()).data;
+    for (const [floorName,roomNumber,roomType,capacity,monthlyRate] of roomSeeds) {
+      let room = (await db.from("rooms").select("*").eq("floor_id", floorIds[floorName]).eq("room_number", roomNumber).maybeSingle()).data;
       if (!room) {
         const result = await db.from("rooms").insert({
-          floor_id: floor.id,
-          ...seed,
-          daily_rate: Math.round(seed.monthly_rate / 30),
-          security_deposit: seed.monthly_rate,
-          status: "available",
+          floor_id: floorIds[floorName], room_number: roomNumber, room_type: roomType,
+          capacity, monthly_rate: monthlyRate, daily_rate: null, security_deposit: 0,
+          status: "available", notes: "Owner-provided room sheet",
         }).select().single();
         if (result.error) throw result.error;
         room = result.data;
-        created.push(`room ${seed.room_number}`);
+        created.push(`room ${roomNumber}`);
       }
 
       const { count } = await db.from("beds").select("id", { count: "exact", head: true }).eq("room_id", room.id);
       if (!count) {
-        for (let i = 1; i <= seed.capacity; i++) {
+        for (let i = 1; i <= capacity; i++) {
           const result = await db.from("beds").insert({ room_id: room.id, bed_label: `B${i}`, status: "available" });
           if (result.error) throw result.error;
         }
-        created.push(`beds for ${seed.room_number}`);
+        created.push(`beds for ${roomNumber}`);
       }
     }
 
