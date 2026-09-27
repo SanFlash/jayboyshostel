@@ -140,10 +140,10 @@ begin
   from public.rooms r
   cross join lateral generate_series(1,r.capacity) gs;
 
-  -- Replace synthetic pricing plans with the actual room-rate bands.
+  -- Replace all room-rate plans with the authoritative owner-provided bands.
   delete from public.pricing_plans
   where hostel_id=h
-    and name in ('Premium 2 Sharing','Standard 3 Sharing','Economy 4 Sharing');
+    and name in ('1 Sharing','2 Sharing','3 Sharing','4 Sharing','Premium 2 Sharing','Standard 3 Sharing','Economy 4 Sharing');
 
   insert into public.pricing_plans(hostel_id,name,room_type,monthly_rate,daily_rate,billing_method,active)
   values
