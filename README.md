@@ -387,7 +387,7 @@ Migration **007_real_room_configuration.sql** is the authoritative room configur
 | 3 | F3-11 | 3 | ₹7,000 |
 | 4 | F4-12 | 3 | ₹7,000 |
 
-No daily rate or security deposit is invented because those values were not present in the supplied sheet. Apply migrations in order through **008**. Migration 007 removes synthetic demo residents/operational records, but it stops rather than deleting data if real active room allocations, room-linked complaints, or room-linked maintenance records already exist.
+No daily rate or security deposit is invented because those values were not present in the supplied sheet. Apply migrations in order through **009**. Migration 007 removes synthetic demo residents/operational records, but it stops rather than deleting data if real active room allocations, room-linked complaints, or room-linked maintenance records already exist.
 
 The primary admin navigation is intentionally reduced to: **Overview, Floor Occupancy, Residents, Admissions, Billing, Complaints, Website, Settings**. Lower-level tables remain available to the backend for future expansion but are no longer presented as separate primary modules.
 
@@ -403,3 +403,6 @@ Migration **008_operational_integrity.sql** adds database-level safeguards: a te
 ### Visual system
 
 The interface uses a dark graphite base with cyan, violet, gold and lime accents, responsive glass panels, 3D CSS hostel graphics, animated room cards, motion transitions, iconography and reduced-motion accessibility handling. The visuals are deliberately abstract; real hostel photographs can be added through the resident/photo storage workflows instead of presenting synthetic imagery as the actual property.
+
+
+Migration **009_security_and_stay_history.sql** extends visitor identity metadata and private visitor-photo storage, and records room/bed changes in a dedicated history table. These remain supporting capabilities rather than additional top-level menus.
