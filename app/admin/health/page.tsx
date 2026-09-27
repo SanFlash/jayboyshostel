@@ -32,14 +32,14 @@ export default function AdminHealthPage(){
 
   return <main className="admin-app">
     <aside className="admin-sidebar">
-      <Link href="/admin" className="admin-brand"><span className="brand-mark"><Activity size={18}/></span><span><b>JAY BOYS</b><small>HEALTH CENTER</small></span></Link>
+      <Link href="/admin" prefetch={false} className="admin-brand"><span className="brand-mark"><Activity size={18}/></span><span><b>JAY BOYS</b><small>HEALTH CENTER</small></span></Link>
       <div className="admin-nav">
-        <div className="admin-nav-group"><span>COMMAND</span><Link href="/admin"><Activity size={15}/><span>Overview</span></Link><Link className="active" href="/admin/health"><ShieldCheck size={15}/><span>System health</span></Link><Link href="/admin/analytics"><Database size={15}/><span>Analytics</span></Link></div>
+        <div className="admin-nav-group"><span>COMMAND</span><Link href="/admin" prefetch={false}><Activity size={15}/><span>Overview</span></Link><Link className="active" href="/admin/health" prefetch={false}><ShieldCheck size={15}/><span>System health</span></Link><Link href="/admin/analytics" prefetch={false}><Database size={15}/><span>Analytics</span></Link></div>
       </div>
-      <div className="admin-sidebar-foot"><Link href="/admin">Back to admin</Link><Link href="/">View website</Link></div>
+      <div className="admin-sidebar-foot"><Link href="/admin" prefetch={false}>Back to admin</Link><Link href="/">View website</Link></div>
     </aside>
     <section className="admin-main">
-      <header className="admin-mobile-head"><Link href="/admin" className="brand"><span className="brand-mark"><Activity size={17}/></span><span><b>JAY BOYS</b><small>HEALTH</small></span></Link></header>
+      <header className="admin-mobile-head"><Link href="/admin" prefetch={false} className="brand"><span className="brand-mark"><Activity size={17}/></span><span><b>JAY BOYS</b><small>HEALTH</small></span></Link></header>
       <div className="admin-content">
         <div className="admin-page-head">
           <div><div className="eyebrow"><ShieldCheck size={14}/> PLATFORM DIAGNOSTICS</div><h1>System health.</h1><p>Run the same checks the production console depends on. Missing database migrations are reported instead of appearing as mysterious blank screens.</p></div>
