@@ -29,21 +29,21 @@ export default async function AnalyticsPage(){
 
   return <main className="admin-app">
     <aside className="admin-sidebar">
-      <Link href="/admin" className="admin-brand"><span className="brand-mark"><Activity size={18}/></span><span><b>JAY BOYS</b><small>ANALYTICS</small></span></Link>
-      <div className="admin-nav"><div className="admin-nav-group"><span>COMMAND</span><Link href="/admin"><Activity size={15}/><span>Overview</span></Link><Link className="active" href="/admin/analytics"><Activity size={15}/><span>Analytics</span></Link><Link href="/admin/health"><Wrench size={15}/><span>System health</span></Link></div></div>
-      <div className="admin-sidebar-foot"><Link href="/admin">Back to admin</Link></div>
+      <Link href="/admin" prefetch={false} className="admin-brand"><span className="brand-mark"><Activity size={18}/></span><span><b>JAY BOYS</b><small>ANALYTICS</small></span></Link>
+      <div className="admin-nav"><div className="admin-nav-group"><span>COMMAND</span><Link href="/admin" prefetch={false}><Activity size={15}/><span>Overview</span></Link><Link className="active" href="/admin/analytics" prefetch={false}><Activity size={15}/><span>Analytics</span></Link><Link href="/admin/health" prefetch={false}><Wrench size={15}/><span>System health</span></Link></div></div>
+      <div className="admin-sidebar-foot"><Link href="/admin" prefetch={false}>Back to admin</Link></div>
     </aside>
-    <section className="admin-main"><header className="admin-mobile-head"><Link href="/admin" className="brand"><span className="brand-mark"><Activity size={17}/></span><span><b>JAY BOYS</b><small>ANALYTICS</small></span></Link></header>
+    <section className="admin-main"><header className="admin-mobile-head"><Link href="/admin" prefetch={false} className="brand"><span className="brand-mark"><Activity size={17}/></span><span><b>JAY BOYS</b><small>ANALYTICS</small></span></Link></header>
       <div className="admin-content">
         <div className="admin-page-head"><div><div className="eyebrow"><Activity size={14}/> OPERATIONS INTELLIGENCE</div><h1>Analytics.</h1><p>Live operational counts sourced directly from the admin database. Use the module workspaces for record-level actions.</p></div><Link className="button" href="/admin"><ArrowLeft size={15}/> Command center</Link></div>
         <section className="admin-metric-grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))"}}>{cards.map(([label,value,Icon])=><article className="admin-stat" key={label}><div><span>{label.toUpperCase()}</span><b>{value}</b></div><Icon/></article>)}</section>
         <section className="admin-dashboard-grid">
           <div className="admin-card"><div className="admin-card-head"><div><span>OPERATING MODEL</span><h2>Core workflows</h2></div><Activity/></div>
             <div className="admin-control-grid">
-              <Link href="/admin/applications"><Activity/><span><b>Admissions</b><small>Application → review → approval → resident.</small></span></Link>
-              <Link href="/admin/tenancies"><Building2/><span><b>Allocation</b><small>Resident → room → bed → billing.</small></span></Link>
-              <Link href="/admin/billing"><WalletCards/><span><b>Billing</b><small>Invoice → payment → reconciliation.</small></span></Link>
-              <Link href="/admin/maintenance"><Wrench/><span><b>Maintenance</b><small>Issue → assignment → resolution.</small></span></Link>
+              <Link href="/admin/applications" prefetch={false}><Activity/><span><b>Admissions</b><small>Application → review → approval → resident.</small></span></Link>
+              <Link href="/admin/tenancies" prefetch={false}><Building2/><span><b>Allocation</b><small>Resident → room → bed → billing.</small></span></Link>
+              <Link href="/admin/billing" prefetch={false}><WalletCards/><span><b>Billing</b><small>Invoice → payment → reconciliation.</small></span></Link>
+              <Link href="/admin/maintenance" prefetch={false}><Wrench/><span><b>Maintenance</b><small>Issue → assignment → resolution.</small></span></Link>
             </div>
           </div>
           <div className="admin-card"><div className="admin-card-head"><div><span>QUALITY GATE</span><h2>Deployment checks</h2></div><Wrench/></div><p className="editor-help">Open System Health after every production deployment. It checks the required tables and environment configuration without exposing secrets.</p><Link className="button primary" style={{marginTop:16}} href="/admin/health">Run system health</Link></div>
