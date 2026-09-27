@@ -45,7 +45,7 @@ create or replace function public.log_room_change()
 returns trigger
 language plpgsql
 security definer
-set search_path=public
+set search_path=''
 as $$
 begin
   if tg_op='UPDATE' and (old.room_id is distinct from new.room_id or old.bed_id is distinct from new.bed_id) then
