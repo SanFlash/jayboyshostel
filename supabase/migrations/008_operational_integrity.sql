@@ -182,7 +182,7 @@ before update of capacity on public.rooms
 for each row execute function public.validate_room_capacity();
 
 -- Convenient reporting surface for admin dashboards and exports.
-create or replace view public.current_room_allocations as
+create or replace view public.current_room_allocations with (security_invoker=true) as
 select
   t.id as tenancy_id,
   t.member_id,
