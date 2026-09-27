@@ -30,7 +30,19 @@ export default function FloorOccupancyPage(){
   useEffect(()=>{void load()},[]);
   const building=buildings.find(b=>b.id===activeBuilding) || buildings[0];
   const q=query.trim().toLowerCase();
-  const floors=useMemo(()=>building?.floors.map(f=>({...f,rooms:f.rooms.filter(r=>!q || r.room_number.toLowerCase().includes(q) || r.beds.some(b=>b.resident?.full_name.toLowerCase().includes(q)))})).filter(f=>f.rooms.length):[],[building,q]);
+  const floors=useMemo(() => {
+    if (!building) return [];
+    return building.floors
+      .map((floor) => ({
+        ...floor,
+        rooms: floor.rooms.filter((room) =>
+          !q ||
+          room.room_number.toLowerCase().includes(q) ||
+          room.beds.some((bed) => bed.resident?.full_name.toLowerCase().includes(q))
+        ),
+      }))
+      .filter((floor) => floor.rooms.length > 0);
+  }, [building, q]);
   const totalRooms=building?.floors.reduce((n,f)=>n+f.rooms.length,0)||0;
   const occupiedBeds=building?.floors.reduce((n,f)=>n+f.rooms.reduce((x,r)=>x+r.beds.filter(b=>b.resident).length,0),0)||0;
 
