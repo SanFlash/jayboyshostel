@@ -58,8 +58,7 @@ begin
   select count(*) into protected_count
   from public.tenancies t
   join public.rooms r on r.id=t.room_id
-  where t.status in ('active','notice_period','checkout_pending')
-    and r.floor_id in (select f.id from public.floors f join public.buildings b on b.id=f.building_id where b.hostel_id=h);
+  where r.floor_id in (select f.id from public.floors f join public.buildings b on b.id=f.building_id where b.hostel_id=h);
 
   if protected_count > 0 then
     raise exception 'Migration 007 stopped: % active/non-demo tenancy record(s) exist. Review real allocations before rebuilding the room structure.', protected_count;
@@ -164,6 +163,5 @@ begin
 end $$;
 
 -- Helpful integrity indexes for the single-building inventory.
-create unique index if not exists one_active_building_per_hostel
-  on public.buildings(hostel_id)
-  where sort_order=1;
+create unique index if not exists one_building_per_hostel
+  on public.buildings(hostel_id);
