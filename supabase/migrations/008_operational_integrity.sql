@@ -198,5 +198,3 @@ join public.floors f on f.id=r.floor_id
 join public.buildings b on b.id=f.building_id
 join public.beds bed on bed.id=t.bed_id
 where t.status in ('active','notice_period','checkout_pending');
-
-grant select on public.current_room_allocations to authenticated;
